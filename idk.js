@@ -1,48 +1,48 @@
 /**
-        * Iframe 元素高亮注入脚本
-        * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
+        * Iframe element highlight injection script
+        * This script must be included in the target website to support cross-domain iframe highlighting.
         *
-        * 使用方法：
-        * 1. 将此脚本添加到目标网站的 HTML 中
-        * 2. 或通过浏览器扩展、用户脚本等方式注入
+        * Usage:
+        * 1. Add this script to the target website's HTML
+        * 2. Or inject via browser extension or user script
         */
 
 (function () {
     "use strict";
 
-    // 检查是否在 iframe 中
+    // Check if in iframe
     if (window.self === window.top) {
-        return; // 不在 iframe 中，不执行
+        return; // Not in iframe, do not execute
     }
 
-    // 检查是否已经初始化过
+    // Check if already initialized
     if (window.__iframeHighlightInitialized) {
         return;
     }
     window.__iframeHighlightInitialized = true;
-    console.log("Iframe 高亮脚本已加载");
+    console.log("Iframe highlight script loaded");
 
-    // 创建高亮覆盖层
+    // Create highlight overlay
     var overlay = document.createElement("div");
     overlay.id = "iframe-highlight-overlay";
     overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
 
-    // 创建悬停高亮框（虚线边框）
+    // Create hover highlight box (dashed border)
     var highlightBox = document.createElement("div");
     highlightBox.id = "iframe-highlight-box";
     highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
 
-    // 创建选中节点的常驻高亮框（实线边框）
+    // Create persistent highlight box for selected nodes (solid border)
     var selectedBox = document.createElement("div");
     selectedBox.id = "iframe-selected-box";
     selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
 
-    // 创建悬停标签显示
+    // Create hover label display
     var tagLabel = document.createElement("div");
     tagLabel.id = "iframe-tag-label";
     tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
 
-    // 创建选中节点标签
+    // Create selected node label
     var selectedLabel = document.createElement("div");
     selectedLabel.id = "iframe-selected-label";
     selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
@@ -52,11 +52,11 @@
     overlay.appendChild(selectedLabel);
     document.body.appendChild(overlay);
 
-    // 存储当前选中的元素
+    // Store currently selected element
     var selectedElement = null;
     var highlightEnabled = false;
 
-    // 更新选中元素的高亮显示
+    // Update selected element highlight display
     function updateSelectedHighlight(element) {
         console.log("updateSelectedHighlight called with:", element);
         if (!element) {
@@ -70,28 +70,28 @@
         var rect = element.getBoundingClientRect();
         console.log("Selected element rect:", rect);
 
-        // 更新选中高亮框位置
+        // Update selected highlight box position
         selectedBox.style.display = "block";
         selectedBox.style.left = "".concat(rect.left - 2, "px");
         selectedBox.style.top = "".concat(rect.top - 2, "px");
         selectedBox.style.width = "".concat(rect.width + 4, "px");
         selectedBox.style.height = "".concat(rect.height + 4, "px");
 
-        // 更新选中标签位置和内容
+        // Update selected label position and content
         selectedLabel.style.display = "block";
         selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
 
-        // 计算标签位置，确保不超出视窗
+        // Calculate label position to ensure it stays in view
         var labelTop = rect.top - 28;
         var labelLeft = rect.left;
 
-        // 如果标签会超出顶部，显示在元素下方
+        // If label goes off the top, display below the element
         if (labelTop < 5) {
             labelTop = rect.bottom + 5;
         }
 
-        // 如果标签会超出右侧，向左调整
-        var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
+        // If label goes off the right edge, adjust left
+        var labelWidth = selectedLabel.offsetWidth || 100; // Estimated width
         if (labelLeft + labelWidth > window.innerWidth - 10) {
             labelLeft = window.innerWidth - labelWidth - 10;
         }
@@ -110,19 +110,19 @@
         var current = element;
         while (current !== document.documentElement) {
             var selector = '';
-            // 优先检查唯一ID
+            // Check unique ID first
             if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
                 segments.unshift("#".concat(current.id));
-                break; // ID唯一，无需继续向上
+                break; // ID is unique, no need to continue up
             }
 
-            // 生成类名选择器（取第一个有效类名）
+            // Generate class selector (take the first valid class)
             var classes = Array.from(current.classList).filter(function (c) {
                 return !c.startsWith('js-');
             });
             var className = classes.length > 0 ? ".".concat(classes[0]) : '';
 
-            // 生成位置索引（nth-child）
+            // Generate position index (nth-child)
             var tag = current.tagName.toLowerCase();
             if (!className) {
                 var siblings = Array.from(current.parentNode.children);
@@ -137,14 +137,14 @@
             current = current.parentElement;
         }
 
-        // 处理根元素
+        // Handle root element
         if (current === document.documentElement) {
             segments.unshift('html');
         }
         return segments.join(' > ');
     }
 
-    // 获取元素文本内容
+    // Get element text content
     function getElementText(element) {
         var _element$textContent;
         if (element.tagName === "INPUT") {
@@ -157,7 +157,7 @@
         return text.length > 50 ? text.substring(0, 50) + "..." : text;
     }
 
-    // 获取元素属性信息
+    // Get element attributes
     function getElementAttributes(element) {
         var attrs = {};
         for (var i = 0; i < element.attributes.length; i++) {
@@ -167,7 +167,7 @@
         return attrs;
     }
 
-    // 鼠标悬停事件处理
+    // Mouse hover event handler
     function handleMouseOver(e) {
         if (!highlightEnabled) return;
         var target = e.target;
@@ -175,12 +175,12 @@
             return;
         }
 
-        // 避免高亮 html 和 body 元素
+        // Avoid highlighting html and body elements
         if (target === document.documentElement || target === document.body) {
             return;
         }
 
-        // 如果是已选中的元素，不显示悬停高亮
+        // If element is already selected, don't show hover highlight
         if (target === selectedElement) {
             highlightBox.style.display = "none";
             tagLabel.style.display = "none";
@@ -191,34 +191,34 @@
         var text = getElementText(target);
         var attributes = getElementAttributes(target);
 
-        // 更新悬停高亮框位置
+        // Update hover highlight box position
         highlightBox.style.display = "block";
         highlightBox.style.left = "".concat(rect.left - 2, "px");
         highlightBox.style.top = "".concat(rect.top - 2, "px");
         highlightBox.style.width = "".concat(rect.width + 4, "px");
         highlightBox.style.height = "".concat(rect.height + 4, "px");
 
-        // 更新标签位置和内容
+        // Update label position and content
         tagLabel.style.display = "block";
         tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
 
-        // 计算标签位置，确保不超出视窗
+        // Calculate label position to ensure it stays in view
         var labelTop = rect.top - 22;
         var labelLeft = rect.left;
 
-        // 如果标签会超出顶部，显示在元素下方
+        // If label goes off the top, display below element
         if (labelTop < 0) {
             labelTop = rect.bottom + 5;
         }
 
-        // 如果标签会超出右侧，向左调整
+        // If label goes off the right edge, adjust left
         if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
             labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
         }
         tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
         tagLabel.style.top = "".concat(labelTop, "px");
 
-        // 发送消息到父窗口
+        // Send message to parent
         var elementInfo = {
             tagName: target.tagName.toLowerCase(),
             rect: {
@@ -245,16 +245,16 @@
                 source: "iframe-highlight-injector"
             }, "*");
         } catch (error) {
-            console.warn("无法发送消息到父窗口:", error);
+            console.warn("Could not send message to parent:", error);
         }
     }
 
-    // 鼠标离开事件处理
+    // Mouse out event handler
     function handleMouseOut(e) {
         if (!highlightEnabled) return;
         var relatedTarget = e.relatedTarget;
 
-        // 如果鼠标移动到高亮相关元素上，不隐藏高亮
+        // If mouse moves over related highlight elements, don't hide
         if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
             return;
         }
@@ -267,26 +267,26 @@
                 source: "iframe-highlight-injector"
             }, "*");
         } catch (error) {
-            console.warn("无法发送消息到父窗口:", error);
+            console.warn("Could not send message to parent:", error);
         }
     }
 
-    // 点击事件处理
+    // Click event handler
     function handleClick(e) {
         var target = e.target;
         if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
             return;
         }
 
-        // 避免处理 html 和 body 元素
+        // Avoid handling html and body elements
         if (target === document.documentElement || target === document.body) {
             return;
         }
 
-        // 检查是否是交互元素，这些元素需要保留默认行为
+        // Check if it's an interactive element, preserve default behavior
         var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
 
-        // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
+        // If highlight enabled, prevent default/propagation for non-interactive elements
         if (highlightEnabled) {
             e.preventDefault();
             e.stopPropagation();
@@ -301,10 +301,10 @@
             rect: rect
         });
 
-        // 立即更新选中高亮
+        // Update selected highlight immediately
         updateSelectedHighlight(target);
 
-        // 隐藏悬停高亮，因为现在是选中状态
+        // Hide hover highlight because now selected
         highlightBox.style.display = "none";
         tagLabel.style.display = "none";
         var elementInfo = {
@@ -333,11 +333,11 @@
                 source: "iframe-highlight-injector"
             }, "*");
         } catch (error) {
-            console.warn("无法发送消息到父窗口:", error);
+            console.warn("Could not send message to parent:", error);
         }
     }
 
-    // 监听来自父窗口的消息
+    // Listen for messages from parent
     function handleParentMessage(event) {
         console.log("Received message from parent:", event.data);
         if (event.data.type === "iframe-highlight-toggle") {
@@ -383,7 +383,7 @@
         }
     }
 
-    // 启用高亮功能
+    // Enable highlight
     function enableHighlight() {
         console.log("Enabling highlight");
         document.addEventListener("mouseover", handleMouseOver, true);
@@ -393,18 +393,18 @@
         overlay.style.display = "block";
     }
 
-    // 禁用高亮功能
+    // Disable highlight
     function disableHighlight() {
         console.log("Disabling highlight");
         highlightEnabled = false;
-        // 保持事件监听器，但通过 highlightEnabled 变量控制行为
-        // 这样可以保留选中状态的显示
+        // Maintain event listeners, but control behavior via highlightEnabled variable
+        // This retains the display of selected state
         highlightBox.style.display = "none";
         tagLabel.style.display = "none";
-        // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
+        // Do not hide selectedBox and selectedLabel, preserve selection
     }
 
-    // 完全禁用高亮功能（移除所有监听器）
+    // Fully disable highlight (remove all listeners)
     function fullyDisableHighlight() {
         console.log("Fully disabling highlight");
         highlightEnabled = false;
@@ -418,11 +418,11 @@
         selectedLabel.style.display = "none";
     }
 
-    // 添加事件监听
+    // Add event listeners
     enableHighlight();
     window.addEventListener("message", handleParentMessage);
 
-    // 暴露全局函数供外部调用
+    // Expose global functions for external call
     window.__iframeHighlightControl = {
         enable: enableHighlight,
         disable: disableHighlight,
@@ -434,7 +434,7 @@
             return selectedElement;
         },
         updateSelected: updateSelectedHighlight,
-        // 通过消息发送开关控制
+        // Toggle via message
         sendToggleMessage: function sendToggleMessage(enabled) {
             window.parent.postMessage({
                 type: 'iframe-highlight-status',
@@ -444,7 +444,7 @@
         }
     };
 
-    // 通知父窗口脚本已加载
+    // Notify parent script loaded
     try {
         window.parent.postMessage({
             type: "iframe-highlight-ready",
@@ -456,10 +456,10 @@
             source: "iframe-highlight-injector"
         }, "*");
     } catch (error) {
-        console.warn("无法发送就绪消息到父窗口:", error);
+        console.warn("Could not send ready message to parent:", error);
     }
 
-    // 清理函数
+    // Cleanup function
     window.__iframeHighlightCleanup = function () {
         fullyDisableHighlight();
         window.removeEventListener("message", handleParentMessage);

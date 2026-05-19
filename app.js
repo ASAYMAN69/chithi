@@ -40,8 +40,8 @@ const initData = () => {
     // Profile
     if (!localStorage.getItem('userProfile')) {
         Storage.save('userProfile', {
-            name: '亲爱的',
-            bio: '永远在一起 💕',
+            name: 'Dear',
+            bio: 'Together forever 💕',
             avatar: '😊'
         });
     }
@@ -178,13 +178,13 @@ const loadProfile = () => {
 
 const saveProfileData = () => {
     const profile = {
-        name: elements.userName.value.trim() || '亲爱的',
-        bio: elements.userBio.value.trim() || '永远在一起 💕',
+        name: elements.userName.value.trim() || 'Dear',
+        bio: elements.userBio.value.trim() || 'Together forever 💕',
         avatar: elements.profileAvatarLarge.textContent
     };
     Storage.save('userProfile', profile);
     elements.avatarEmoji.textContent = profile.avatar;
-    showToast('保存成功 💕');
+    showToast('Saved successfully 💕');
 };
 
 // Profile Modal Events
@@ -219,8 +219,8 @@ const updateMusicUI = () => {
         elements.musicLike.classList.toggle('liked', song.liked);
     } else {
         elements.musicCover.src = 'https://picsum.photos/200?random=music';
-        elements.musicTitle.textContent = '还没有播放音乐';
-        elements.musicArtist.textContent = '添加一首喜欢的歌吧';
+        elements.musicTitle.textContent = 'No music playing';
+        elements.musicArtist.textContent = 'Add your favorite song';
         elements.musicLike.classList.remove('liked');
     }
 
@@ -246,7 +246,7 @@ const renderSongList = () => {
                 <div class="song-artist">${song.artist}</div>
             </div>
             <div class="song-actions">
-                <button class="song-action-btn delete" data-index="${index}" aria-label="删除">
+                <button class="song-action-btn delete" data-index="${index}" aria-label="Delete">
                     <svg viewBox="0 0 24 24">
                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                     </svg>
@@ -288,7 +288,7 @@ const updatePlayIcon = () => {
 const togglePlayPause = () => {
     const data = musicData();
     if (data.queue.length === 0) {
-        showToast('先添加一首歌曲吧');
+        showToast('Add a song first');
         return;
     }
     if (data.currentIndex < 0) {
@@ -341,7 +341,7 @@ const deleteSong = (index) => {
     }
     Storage.save('musicData', data);
     updateMusicUI();
-    showToast('已删除');
+    showToast('Deleted');
 };
 
 const extractYouTubeId = (url) => {
@@ -355,7 +355,7 @@ const addSong = () => {
     const videoId = extractYouTubeId(url);
 
     if (!videoId) {
-        showToast('请输入有效的 YouTube 链接');
+        showToast('Please enter a valid YouTube URL');
         return;
     }
 
@@ -363,8 +363,8 @@ const addSong = () => {
     const song = {
         id: Date.now().toString(),
         youtubeId: videoId,
-        title: `歌曲 ${data.queue.length + 1}`,
-        artist: '未知艺术家',
+        title: `Song ${data.queue.length + 1}`,
+        artist: 'Unknown Artist',
         thumbnail: `https://picsum.photos/200?random=${Date.now()}`,
         liked: false
     };
@@ -374,8 +374,9 @@ const addSong = () => {
     updateMusicUI();
     closeModal(elements.addSongModal);
     elements.youtubeUrl.value = '';
-    showToast('歌曲已添加');
+    showToast('Song added');
 };
+
 
 // Music Modal Events
 elements.discWrapper.addEventListener('click', () => {
@@ -415,7 +416,7 @@ const renderReels = () => {
                         <svg viewBox="0 0 24 24" fill="white">
                             <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
                         </svg>
-                        <p>还没有动态<br>点击右下角发布第一个视频吧</p>
+                        <p>No feed yet<br>Click bottom-right to post your first video</p>
                     </div>
                 </div>
             </div>
@@ -473,11 +474,11 @@ const addReel = () => {
     const videoId = extractYouTubeId(url);
 
     if (!videoId) {
-        showToast('请输入有效的 YouTube 链接');
+        showToast('Please enter a valid YouTube URL');
         return;
     }
 
-    const title = elements.reelTitle.value.trim() || '无标题';
+    const title = elements.reelTitle.value.trim() || 'No title';
     const description = elements.reelDesc.value.trim() || '';
 
     const data = reelsData();
@@ -497,7 +498,7 @@ const addReel = () => {
     elements.reelVideoUrl.value = '';
     elements.reelTitle.value = '';
     elements.reelDesc.value = '';
-    showToast('动态已发布');
+    showToast('Feed published');
 };
 
 const switchToReels = () => {
@@ -673,7 +674,7 @@ const renderNotes = () => {
         `;
         el.innerHTML = `
             <textarea class="sticky-note-content" style="color: ${note.color};">${note.content}</textarea>
-            <button class="sticky-note-delete" aria-label="删除">×</button>
+            <button class="sticky-note-delete" aria-label="Delete">×</button>
         `;
 
         const textarea = el.querySelector('textarea');
@@ -694,7 +695,7 @@ const renderNotes = () => {
                 notes.splice(idx, 1);
                 Storage.save('canvasNotes', notes);
                 el.remove();
-                showToast('便签已删除');
+                showToast('Note deleted');
             }
         });
 
@@ -743,7 +744,7 @@ canvas.addEventListener('dblclick', (e) => {
 
 // Click to create note
 elements.noteTool.addEventListener('click', () => {
-    showToast('双击画布创建便签');
+    showToast('Double-tap canvas to create note');
 });
 
 // ==================== Weather Animation ====================
