@@ -1,0 +1,233 @@
+/* Music Modal */
+.music-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+}
+
+.music-cover {
+    width: 160px;
+    height: 160px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-pink-light);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.music-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.music-info {
+    text-align: center;
+}
+
+.music-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.music-artist {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.music-control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-pink-light);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.music-control-btn:active {
+    transform: scale(0.95);
+    background: var(--primary-pink);
+}
+
+.music-control-btn.main {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-accent) 0%, var(--primary-deep) 100%);
+}
+
+.music-control-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--primary-deep);
+}
+
+.music-control-btn.main svg {
+    fill: white;
+}
+
+.music-like-btn {
+    width: 44px;
+    height: 44px;
+}
+
+.music-like-btn.liked {
+    background: var(--primary-pink);
+}
+
+.music-like-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: var(--primary-deep);
+    stroke-width: 2;
+}
+
+.music-like-btn.liked svg {
+    fill: var(--primary-deep);
+    stroke: none;
+}
+
+.music-queue {
+    border-top: 1px solid var(--primary-pink-light);
+    padding-top: 16px;
+}
+
+.music-queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.music-queue-header h4 {
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.add-song-btn {
+    padding: 8px 16px;
+    background: var(--primary-accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.song-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.song-item:active {
+    background: var(--primary-pink-light);
+}
+
+.song-item.playing {
+    background: var(--primary-pink-light);
+}
+
+.song-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.song-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-details {
+    flex: 1;
+}
+
+.song-name {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.song-artist {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.song-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.song-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.song-action-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--text-secondary);
+}
+
+.song-action-btn.delete svg {
+    fill: #FF6B6B;
+}
+
+/* Add Song Modal */
+.url-input-wrapper {
+    margin-bottom: 16px;
+}
+
+.url-input-wrapper label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.url-input-wrapper input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--primary-pink-light);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--primary-bg);
+}
+
+.url-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+}

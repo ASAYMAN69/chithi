@@ -1,0 +1,25 @@
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-accent) 0%, var(--primary-deep) 100%);
+    color: white;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background: var(--primary-pink-light);
+    color: var(--text-primary);
+}
