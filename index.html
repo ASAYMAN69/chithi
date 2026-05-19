@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="screen-orientation" content="portrait">
+    <title>我们的空间 💕</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Weather Background -->
+        <div class="weather-bg sunny" id="weatherBg">
+            <!-- Sun -->
+            <div class="sun-rays">
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+                <div class="ray"></div>
+            </div>
+            <div class="sun"></div>
+
+            <!-- Clouds -->
+            <div class="clouds">
+                <div class="cloud cloud-1"></div>
+                <div class="cloud cloud-2"></div>
+            </div>
+
+            <!-- Rain Canvas -->
+            <canvas class="rain-canvas" id="rainCanvas"></canvas>
+
+            <!-- Snow Canvas -->
+            <canvas class="snow-canvas" id="snowCanvas"></canvas>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="icon-btn" id="videoBtn" aria-label="视频动态">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="header-right">
+                <div class="disc-wrapper" id="discWrapper">
+                    <div class="disc-glow"></div>
+                    <div class="disc"></div>
+                </div>
+                <div class="avatar" id="avatarBtn" role="button" tabindex="0" aria-label="个人资料">
+                    <span id="avatarEmoji">😊</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Canvas View -->
+            <div class="canvas-view" id="canvasView">
+                <canvas class="drawing-canvas" id="drawingCanvas"></canvas>
+
+                <!-- Sticky Notes Container -->
+                <div id="notesContainer"></div>
+
+                <!-- Canvas Toolbar -->
+                <div class="canvas-toolbar">
+                    <button class="tool-btn active" id="penTool" aria-label="画笔">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" id="eraserTool" aria-label="橡皮擦">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l4.24 4.24 7.9-7.9-4.24-4.26z" />
+                        </svg>
+                    </button>
+                    <button class="tool-btn" id="noteTool" aria-label="便签">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+                        </svg>
+                    </button>
+                    <div class="color-picker" id="colorPicker">
+                        <div class="color-dot selected" data-color="#FFB6C1" style="background: #FFB6C1;"
+                            aria-label="粉色"></div>
+                        <div class="color-dot" data-color="#FF69B4" style="background: #FF69B4;" aria-label="深粉"></div>
+                        <div class="color-dot" data-color="#87CEEB" style="background: #87CEEB;" aria-label="蓝色"></div>
+                        <div class="color-dot" data-color="#FFD700" style="background: #FFD700;" aria-label="金色"></div>
+                        <div class="color-dot" data-color="#98FB98" style="background: #98FB98;" aria-label="绿色"></div>
+                        <div class="color-dot" data-color="#DDA0DD" style="background: #DDA0DD;" aria-label="紫色"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reels View -->
+            <div class="reels-view" id="reelsView">
+                <div class="reels-header">
+                    <button class="icon-btn" id="backToCanvas" aria-label="返回画布"
+                        style="background: rgba(255,255,255,0.2);">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="white" />
+                        </svg>
+                    </button>
+                    <h2>动态</h2>
+                    <div style="width: 44px;"></div>
+                </div>
+                <div class="reels-list" id="reelsList">
+                    <!-- Reels will be added here -->
+                </div>
+                <button class="add-reel-btn" id="addReelBtn" aria-label="发布动态">+</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>个人资料</h3>
+                <button class="modal-close" id="closeProfileModal" aria-label="关闭">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-info">
+                    <div class="profile-avatar-large" id="profileAvatarLarge">😊</div>
+                </div>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="userName">名字</label>
+                        <input type="text" id="userName" placeholder="给 TA 起的昵称" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="userBio">个性签名</label>
+                        <textarea id="userBio" placeholder="想对 TA 说的话..." rows="3" maxlength="100"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelProfile">取消</button>
+                <button class="btn btn-primary" id="saveProfile">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div class="modal-overlay" id="musicModal">
+        <div class="modal" style="max-height: 90vh;">
+            <div class="modal-header">
+                <h3>音乐</h3>
+                <button class="modal-close" id="closeMusicModal" aria-label="关闭">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="music-player" id="musicPlayer">
+                    <div class="music-cover">
+                        <img src="https://picsum.photos/200?random=music" alt="专辑封面" id="musicCover">
+                    </div>
+                    <div class="music-info">
+                        <div class="music-title" id="musicTitle">还没有播放音乐</div>
+                        <div class="music-artist" id="musicArtist">添加一首喜欢的歌吧</div>
+                    </div>
+                    <div class="music-controls">
+                        <button class="music-control-btn" id="prevSong" aria-label="上一首">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                            </svg>
+                        </button>
+                        <button class="music-control-btn main" id="playPause" aria-label="播放/暂停">
+                            <svg viewBox="0 0 24 24" id="playIcon">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </button>
+                        <button class="music-control-btn" id="nextSong" aria-label="下一首">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                            </svg>
+                        </button>
+                        <button class="music-control-btn music-like-btn" id="musicLike" aria-label="喜欢">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="music-queue">
+                    <div class="music-queue-header">
+                        <h4>播放列表</h4>
+                        <button class="add-song-btn" id="addSongBtn">添加歌曲</button>
+                    </div>
+                    <div class="song-list" id="songList">
+                        <div class="empty-state" id="emptyQueue">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                            </svg>
+                            <p>播放列表是空的<br>点击上方添加歌曲</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Song Modal -->
+    <div class="modal-overlay" id="addSongModal">
+        <div class="modal" style="max-width: 320px;">
+            <div class="modal-header">
+                <h3>添加歌曲</h3>
+                <button class="modal-close" id="closeAddSong" aria-label="关闭">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="url-input-wrapper">
+                    <label for="youtubeUrl">YouTube 链接</label>
+                    <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelAddSong">取消</button>
+                <button class="btn btn-primary" id="confirmAddSong">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Reel Modal -->
+    <div class="modal-overlay" id="addReelModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>发布动态</h3>
+                <button class="modal-close" id="closeAddReel" aria-label="关闭">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="reel-form">
+                    <div class="form-group">
+                        <label for="reelVideoUrl">视频链接</label>
+                        <input type="url" id="reelVideoUrl" placeholder="YouTube 或其他视频链接">
+                    </div>
+                    <div class="form-group">
+                        <label for="reelTitle">标题</label>
+                        <input type="text" id="reelTitle" placeholder="给视频起个标题" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="reelDesc">描述</label>
+                        <textarea id="reelDesc" placeholder="说点什么..." rows="3" maxlength="200"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelAddReel">取消</button>
+                <button class="btn btn-primary" id="confirmAddReel">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+    <script src="idk.js"></script>
+
+</body>
+
+</html>
