@@ -67,6 +67,16 @@ const initData = () => {
     if (!localStorage.getItem('canvasNotes')) {
         Storage.save('canvasNotes', []);
     }
+
+    // Load canvas image
+    const savedImage = Storage.load('canvasImage');
+    if (savedImage && elements.drawingCanvas) {
+        const img = new Image();
+        img.onload = () => {
+            elements.drawingCanvas.getContext('2d').drawImage(img, 0, 0);
+        };
+        img.src = savedImage;
+    }
 };
 
 // ==================== DOM Elements ====================
@@ -587,6 +597,7 @@ const draw = (e) => {
 const stopDrawing = () => {
     AppState.isDrawing = false;
     currentDrawing = [];
+    Storage.save('canvasImage', canvas.toDataURL());
 };
 
 // Canvas Events
