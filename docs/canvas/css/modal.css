@@ -81,3 +81,87 @@
     gap: 12px;
     border-top: 1px solid var(--primary-pink-light);
 }
+
+/* Modal Base */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 16px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 360px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+    transform: translateY(0);
+}
+
+.modal-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--primary-pink-light);
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-pink-light);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-secondary);
+}
+
+.modal-body {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-actions {
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid var(--primary-pink-light);
+}
