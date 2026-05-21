@@ -1,1 +1,1 @@
-const CONNECTION_URL = 'http://10.236.151.88:6767';
+const CONNECTION_URL = 'https://chithi-backend.asayman.xyz';
