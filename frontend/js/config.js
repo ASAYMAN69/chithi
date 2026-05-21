@@ -1,0 +1,1 @@
+const CONNECTION_URL = 'https://chithi-backend.asayman.xyz';
