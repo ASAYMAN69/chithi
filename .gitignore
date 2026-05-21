@@ -1,2 +1,13 @@
 useless/
 .vscode/
+.antigravitycli/
+*PLAN*.md
+
+# Backend
+backend/.env
+backend/config/*.json
+backend/data/
+
+# Frontend
+frontend/notes.json
+

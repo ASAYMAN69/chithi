@@ -1,0 +1,14 @@
+{
+  "name": "chithi",
+  "version": "1.0.0",
+  "description": "Chithi - A love letter app",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "setup": "cd backend && npm run setup",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm start"
+  },
+  "keywords": ["chithi", "love-letter", "app"],
+  "author": "",
+  "license": "ISC"
+}
