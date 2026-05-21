@@ -270,7 +270,6 @@ const loadProfile = async () => {
     try {
         currentUser = await API.getUser();
         elements.avatarEmoji.textContent = currentUser.pfp || '😊';
-        elements.userName.value = currentUser.name || '';
         elements.userBio.value = currentUser.bio || '';
         elements.profileAvatarLarge.textContent = currentUser.pfp || '😊';
     } catch (e) {
