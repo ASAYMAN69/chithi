@@ -302,7 +302,11 @@ body {
     border: none;
     cursor: pointer;
     padding: 10px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
 }
 
 .note-like-btn svg {

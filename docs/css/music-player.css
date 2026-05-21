@@ -41,6 +41,7 @@
 .music-controls {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 20px;
 }
 
@@ -96,8 +97,8 @@
 }
 
 .music-like-btn.liked svg {
-    fill: var(--primary-deep);
-    stroke: none;
+    fill: #ff4757;
+    stroke: #ff4757;
 }
 
 .music-queue {

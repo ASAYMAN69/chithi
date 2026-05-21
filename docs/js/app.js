@@ -139,6 +139,7 @@ const openNoteModal = async (note) => {
     const colorIndex = note.username.charCodeAt(0) % colors.length;
     noteModal.style.backgroundColor = colors[colorIndex] + 'cc';
     
+    // Set initial state from localStorage immediately
     noteLikeBtn.classList.toggle('liked', likedNotes.has(note.id));
     noteLikeBtn.style.display = isOwner ? 'none' : 'flex';
     
@@ -149,6 +150,18 @@ const openNoteModal = async (note) => {
     if (likesContainer) {
         try {
             const likes = await API.getNoteLikes(note.id);
+            // Sync local likedNotes with server state for the current user
+            const hasLiked = likes.some(l => l.username === currentUser);
+            if (hasLiked) {
+                likedNotes.add(note.id);
+            } else {
+                likedNotes.delete(note.id);
+            }
+            localStorage.setItem('likedNotes', JSON.stringify([...likedNotes]));
+            
+            // Update UI with definitive server state
+            noteLikeBtn.classList.toggle('liked', hasLiked);
+
             if (likes.length > 0) {
                 likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => l.username).join(', ')}`;
                 likesContainer.style.display = 'block';
@@ -156,7 +169,7 @@ const openNoteModal = async (note) => {
                 likesContainer.style.display = 'none';
             }
         } catch (e) {
-            likesContainer.style.display = 'none';
+            console.warn('Sync likes failed:', e);
         }
     }
     
@@ -391,7 +404,12 @@ const nextSong = () => {
 };
 
 const toggleLike = () => {
-    // Not implemented on backend yet
+    if (currentIndex >= 0 && musicQueue[currentIndex]) {
+        const song = musicQueue[currentIndex];
+        // For now, toggle class locally
+        elements.musicLike.classList.toggle('liked');
+        showToast(elements.musicLike.classList.contains('liked') ? 'Liked 💕' : 'Unliked');
+    }
 };
 
 const deleteSong = async (index) => {
