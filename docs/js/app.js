@@ -145,6 +145,9 @@ const openNoteModal = async (note) => {
     
     const editBtn = document.getElementById('editNoteBtn');
     editBtn.style.display = isOwner ? 'flex' : 'none';
+
+    const deleteBtn = document.getElementById('deleteNoteBtn');
+    deleteBtn.style.display = isOwner ? 'flex' : 'none';
     
     const likesContainer = document.getElementById('noteLikesContainer');
     if (likesContainer) {
@@ -183,6 +186,28 @@ document.getElementById('editNoteBtn').addEventListener('click', () => {
     document.getElementById('confirmAddNote').textContent = 'Save';
     closeModal(noteModal);
     openModal(elements.addNoteModal);
+});
+
+document.getElementById('deleteNoteBtn').addEventListener('click', () => {
+    closeModal(noteModal);
+    openModal(document.getElementById('confirmDeleteModal'));
+});
+
+document.getElementById('cancelDeleteNote').addEventListener('click', () => {
+    closeModal(document.getElementById('confirmDeleteModal'));
+    openModal(noteModal);
+});
+
+document.getElementById('confirmDeleteNote').addEventListener('click', async () => {
+    if (!currentNoteId) return;
+    try {
+        await API.deleteNote(currentNoteId);
+        await loadNotes();
+        showToast('Note deleted!');
+        closeModal(document.getElementById('confirmDeleteModal'));
+    } catch (e) {
+        showToast(e.message || 'Delete failed');
+    }
 });
 
 document.getElementById('confirmAddNote').textContent = 'Add';

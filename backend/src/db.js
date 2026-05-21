@@ -3,8 +3,68 @@ const fs = require('fs');
 const { getDBPath } = require('./utils/paths');
 
 const dbPath = getDBPath();
-
 let db;
+
+/**
+ * Single Source of Truth for the Database Schema.
+ * Add new columns here, and they will be automatically added to the database on startup.
+ */
+const SCHEMA = {
+  users: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    username: 'TEXT UNIQUE NOT NULL',
+    pfp: 'TEXT DEFAULT "😊"',
+    bio: 'TEXT DEFAULT ""',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+    updatedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
+  },
+  notes: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    noteText: 'TEXT NOT NULL',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+    updatedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+    isDeleted: 'INTEGER DEFAULT 0',
+    username: 'TEXT NOT NULL'
+  },
+  reels: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    videoPath: 'TEXT NOT NULL',
+    name: 'TEXT NOT NULL',
+    description: 'TEXT DEFAULT ""',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+    username: 'TEXT NOT NULL'
+  },
+  music: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    musicPath: 'TEXT NOT NULL',
+    thumbnailPath: 'TEXT DEFAULT ""',
+    name: 'TEXT NOT NULL',
+    description: 'TEXT DEFAULT ""',
+    priority: 'INTEGER DEFAULT 0',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
+    username: 'TEXT NOT NULL'
+  },
+  weather: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    username: 'TEXT NOT NULL',
+    latitude: 'REAL NOT NULL',
+    longitude: 'REAL NOT NULL',
+    weather_condition: 'TEXT',
+    cachedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
+  },
+  canvas: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    username: 'TEXT NOT NULL',
+    canvasData: 'TEXT',
+    updatedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
+  },
+  note_likes: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    note_id: 'INTEGER NOT NULL',
+    username: 'TEXT NOT NULL',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
+  }
+};
 
 const initDB = async () => {
   const SQL = await initSqlJs();
@@ -16,86 +76,44 @@ const initDB = async () => {
   
   db = new SQL.Database(fileBuffer);
   
-  db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      pfp TEXT DEFAULT '😊',
-      bio TEXT DEFAULT '',
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+  // Create base tables if they don't exist (with minimal core columns)
+  db.run(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, noteText TEXT NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, videoPath TEXT NOT NULL, name TEXT NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS music (id INTEGER PRIMARY KEY AUTOINCREMENT, musicPath TEXT NOT NULL, name TEXT NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS weather (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS canvas (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS note_likes (id INTEGER PRIMARY KEY AUTOINCREMENT, note_id INTEGER NOT NULL, username TEXT NOT NULL, UNIQUE(note_id, username))`);
   
-  db.run(`
-    CREATE TABLE IF NOT EXISTS notes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      noteText TEXT NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      isDeleted INTEGER DEFAULT 0,
-      username TEXT NOT NULL
-    )
-  `);
-  
-  db.run(`
-    CREATE TABLE IF NOT EXISTS reels (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      videoPath TEXT NOT NULL,
-      name TEXT NOT NULL,
-      description TEXT DEFAULT '',
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      username TEXT NOT NULL
-    )
-  `);
-  
-  db.run(`
-    CREATE TABLE IF NOT EXISTS music (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      musicPath TEXT NOT NULL,
-      thumbnailPath TEXT DEFAULT '',
-      name TEXT NOT NULL,
-      description TEXT DEFAULT '',
-      priority INTEGER DEFAULT 0,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      username TEXT NOT NULL
-    )
-  `);
-  
-  db.run(`
-    CREATE TABLE IF NOT EXISTS weather (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      latitude REAL NOT NULL,
-      longitude REAL NOT NULL,
-      weather_condition TEXT,
-      cachedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  
-  db.run(`
-    CREATE TABLE IF NOT EXISTS canvas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      canvasData TEXT,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-db.run(`
-    CREATE TABLE IF NOT EXISTS note_likes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      note_id INTEGER NOT NULL,
-      username TEXT NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(note_id, username)
-    )
-  `);
+  // Automatically sync the rest of the columns
+  syncSchema();
   
   saveDB();
-  console.log('Database schema initialized');
+  console.log('Database schema initialized and synced');
   
   return db;
+};
+
+/**
+ * Automatically adds missing columns to existing tables based on the SCHEMA definition.
+ */
+const syncSchema = () => {
+  for (const [tableName, columns] of Object.entries(SCHEMA)) {
+    // Get existing columns for this table
+    const existingColumns = getAll(`PRAGMA table_info(${tableName})`).map(c => c.name);
+    
+    // Check for missing columns
+    for (const [colName, colType] of Object.entries(columns)) {
+      if (!existingColumns.includes(colName)) {
+        try {
+          db.run(`ALTER TABLE ${tableName} ADD COLUMN ${colName} ${colType}`);
+          console.log(`Auto-Migrated: Added missing column '${colName}' to '${tableName}'`);
+        } catch (err) {
+          console.error(`Failed to add column ${colName} to ${tableName}:`, err.message);
+        }
+      }
+    }
+  }
 };
 
 const saveDB = () => {

@@ -43,8 +43,22 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
+  const username = req.headers['x-username'];
   
-  runQuery('UPDATE notes SET isDeleted = 1, updatedAt = datetime("now") WHERE id = ?', [id]);
+  if (!username) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const existing = getOne('SELECT * FROM notes WHERE id = ?', [id]);
+  if (!existing) {
+    return res.status(404).json({ error: 'Note not found' });
+  }
+  
+  if (existing.username !== username) {
+    return res.status(403).json({ error: 'Unauthorized to delete this note' });
+  }
+  
+  runQuery('UPDATE notes SET isDeleted = 1, updatedAt = datetime("now") WHERE id = ? AND username = ?', [id, username]);
   
   res.json({ success: true });
 });

@@ -108,7 +108,7 @@
 .note-edit-btn {
     position: absolute;
     top: 12px;
-    right: 12px;
+    right: 50px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -128,4 +128,29 @@
 
 .note-edit-btn:hover {
     background: rgba(255,255,255,0.5);
+}
+
+.note-delete-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 71, 87, 0.2);
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.note-delete-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #ff4757;
+}
+
+.note-delete-btn:hover {
+    background: rgba(255, 71, 87, 0.4);
 }
