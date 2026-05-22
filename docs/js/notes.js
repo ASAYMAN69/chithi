@@ -76,7 +76,7 @@ const openNoteModal = async (note) => {
             noteLikeBtn.classList.toggle('liked', hasLiked);
 
             if (likes.length > 0) {
-                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => l.username).join(', ')}`;
+                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => escapeHtml(l.username)).join(', ')}`;
                 likesContainer.style.display = 'block';
             } else {
                 likesContainer.style.display = 'none';
@@ -163,7 +163,7 @@ const toggleNoteLike = async () => {
             noteLikeBtn.classList.add('liked');
             const likesContainer = document.getElementById('noteLikesContainer');
             if (likesContainer && likes.length > 0) {
-                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => l.username).join(', ')}`;
+                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => escapeHtml(l.username)).join(', ')}`;
                 likesContainer.style.display = 'block';
             }
         }
@@ -204,9 +204,9 @@ const loadNotes = async () => {
 
             if (note.type === 'image' && note.noteText) {
                 const imgUrl = getImageCdnUrl(note.noteText);
-                card.innerHTML = `<h4>${note.username}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>`;
+                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>`;
             } else {
-                card.innerHTML = `<h4>${note.username}</h4><p>${note.noteText}</p>`;
+                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>`;
             }
 
             card.addEventListener('click', () => openNoteModal(note));

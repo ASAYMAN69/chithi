@@ -69,13 +69,4 @@ elements.confirmUpload.addEventListener('click', async () => {
     }
 });
 
-// Add upload button to music modal
-const uploadBtn = document.createElement('button');
-uploadBtn.className = 'add-song-btn';
-uploadBtn.textContent = 'Upload File';
-uploadBtn.style.marginTop = '10px';
-uploadBtn.addEventListener('click', () => {
-    closeModal(elements.musicModal);
-    openModal(elements.uploadModal);
-});
-document.getElementById('songList').parentElement.appendChild(uploadBtn);
+

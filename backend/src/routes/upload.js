@@ -114,4 +114,41 @@ router.post('/video', videoUpload.single('file'), (req, res) => {
   });
 });
 
+const audioUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const dir = path.join(CDN_DIR, 'audio');
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      cb(null, `${uuidv4()}${ext}`);
+    }
+  }),
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/flac', 'audio/aac', 'audio/x-m4a', 'audio/webm'];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid audio file type'), false);
+    }
+  }
+});
+
+router.post('/music-file', audioUpload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const username = req.headers['x-username'];
+  const key = uuidv4();
+
+  runQuery('INSERT INTO file_management (key, fileType, original_path, username) VALUES (?, ?, ?, ?)',
+    [key, 'audio', req.file.path, username]);
+
+  res.json({ success: true, key });
+});
+
 module.exports = router;

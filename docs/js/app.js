@@ -73,7 +73,6 @@ const elements = {
     playPause: document.getElementById('playPause'),
     prevSong: document.getElementById('prevSong'),
     nextSong: document.getElementById('nextSong'),
-    musicLike: document.getElementById('musicLike'),
     musicCover: document.getElementById('musicCover'),
     musicTitle: document.getElementById('musicTitle'),
     musicArtist: document.getElementById('musicArtist'),
@@ -166,7 +165,7 @@ const openNoteModal = async (note) => {
             noteLikeBtn.classList.toggle('liked', hasLiked);
 
             if (likes.length > 0) {
-                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => l.username).join(', ')}`;
+                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => escapeHtml(l.username)).join(', ')}`;
                 likesContainer.style.display = 'block';
             } else {
                 likesContainer.style.display = 'none';
@@ -227,7 +226,7 @@ const toggleNoteLike = async () => {
             noteLikeBtn.classList.add('liked');
             const likesContainer = document.getElementById('noteLikesContainer');
             if (likesContainer && likes.length > 0) {
-                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => l.username).join(', ')}`;
+                likesContainer.innerHTML = `<strong>Liked by:</strong> ${likes.map(l => escapeHtml(l.username)).join(', ')}`;
                 likesContainer.style.display = 'block';
             }
         }
@@ -349,13 +348,16 @@ const renderSongList = () => {
     musicQueue.forEach((song, index) => {
         const item = document.createElement('div');
         item.className = `song-item ${index === currentIndex ? 'playing' : ''}`;
+        const thumb = song.thumbnailPath ? escapeHtml(song.thumbnailPath) : 'https://picsum.photos/200?random=music';
+        const sName = escapeHtml(song.name || '');
+        const sDesc = escapeHtml(song.description || 'Unknown');
         item.innerHTML = `
             <div class="song-thumb">
-                <img src="${song.thumbnailPath || 'https://picsum.photos/200?random=music'}" alt="${song.name}">
+                <img src="${thumb}" alt="${sName}">
             </div>
             <div class="song-details">
-                <div class="song-name">${song.name}</div>
-                <div class="song-artist">${song.description || 'Unknown'}</div>
+                <div class="song-name">${sName}</div>
+                <div class="song-artist">${sDesc}</div>
             </div>
             <div class="song-actions">
                 <button class="song-action-btn delete" data-index="${index}" aria-label="Delete">
@@ -425,15 +427,6 @@ const nextSong = () => {
         currentIndex++;
     }
     updateMusicUI();
-};
-
-const toggleLike = () => {
-    if (currentIndex >= 0 && musicQueue[currentIndex]) {
-        const song = musicQueue[currentIndex];
-        // For now, toggle class locally
-        elements.musicLike.classList.toggle('liked');
-        showToast(elements.musicLike.classList.contains('liked') ? 'Liked 💕' : 'Unliked');
-    }
 };
 
 const deleteSong = async (index) => {
@@ -509,7 +502,6 @@ elements.addSongModal.addEventListener('click', (e) => {
 elements.playPause.addEventListener('click', togglePlayPause);
 elements.prevSong.addEventListener('click', prevSong);
 elements.nextSong.addEventListener('click', nextSong);
-elements.musicLike.addEventListener('click', toggleLike);
 
 
 
@@ -711,7 +703,7 @@ const loadNotes = async () => {
             card.style.backgroundColor = colors[index % colors.length];
             card.style.display = 'block';
             card.dataset.id = note.id;
-            card.innerHTML = `<h4>${note.username}</h4><p>${note.noteText}</p>`;
+            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>`;
             card.addEventListener('click', () => openNoteModal(note));
             container.appendChild(card);
         });

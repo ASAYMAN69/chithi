@@ -95,5 +95,24 @@ const API = {
 
     if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
     return response.json();
-  }
+  },
+
+  // Music file upload (returns {key, ext})
+  async uploadMusicFile(file) {
+    const username = getUsername();
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${CONNECTION_URL}/api/upload/music-file`, {
+      method: 'POST',
+      headers: { 'X-Username': username },
+      body: formData
+    });
+
+    if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
+    return response.json();
+  },
+
+  // Music track (upload-based)
+  addMusicTrack: (data) => apiFetch('/api/music/tracks', { method: 'POST', body: JSON.stringify(data) })
 };

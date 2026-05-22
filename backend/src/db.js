@@ -72,6 +72,16 @@ const SCHEMA = {
     compressed_path: 'TEXT',
     original_path: 'TEXT',
     username: 'TEXT'
+  },
+  music_tracks: {
+    id: 'TEXT PRIMARY KEY',
+    key: 'TEXT NOT NULL',
+    musicPath: 'TEXT NOT NULL DEFAULT ""',
+    username: 'TEXT NOT NULL',
+    name: 'TEXT DEFAULT ""',
+    author: 'TEXT DEFAULT ""',
+    thumbnail: 'TEXT DEFAULT ""',
+    createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
   }
 };
 
@@ -94,6 +104,7 @@ const initDB = async () => {
   db.run(`CREATE TABLE IF NOT EXISTS canvas (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS note_likes (id INTEGER PRIMARY KEY AUTOINCREMENT, note_id INTEGER NOT NULL, username TEXT NOT NULL, UNIQUE(note_id, username))`);
   db.run(`CREATE TABLE IF NOT EXISTS file_management (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT UNIQUE NOT NULL)`);
+  db.run(`CREATE TABLE IF NOT EXISTS music_tracks (id TEXT PRIMARY KEY, key TEXT NOT NULL, username TEXT NOT NULL)`);
   
   // Automatically sync the rest of the columns
   syncSchema();
