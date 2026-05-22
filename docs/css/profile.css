@@ -45,6 +45,7 @@
     background: var(--primary-bg);
     color: var(--text-primary);
     resize: none;
+    width: 100%;
 }
 
 .form-group input:focus,
