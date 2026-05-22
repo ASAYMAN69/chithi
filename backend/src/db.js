@@ -137,6 +137,8 @@ const syncSchema = () => {
   }
 };
 
+let saveTimer = null;
+
 const saveDB = () => {
   if (db) {
     const data = db.export();
@@ -145,18 +147,34 @@ const saveDB = () => {
   }
 };
 
+const scheduleSave = () => {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    saveDB();
+  }, 200);
+};
+
+const flushDB = () => {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    saveDB();
+  }
+};
+
 const getDB = () => db;
 
 const closeDB = () => {
   if (db) {
-    saveDB();
+    flushDB();
     db.close();
   }
 };
 
 const runQuery = (sql, params = []) => {
   db.run(sql, params);
-  saveDB();
+  scheduleSave();
   return { lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0] };
 };
 
