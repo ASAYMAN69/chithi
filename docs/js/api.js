@@ -27,7 +27,7 @@ const API = {
 
   // Notes
   getNotes: () => apiFetch('/api/notes'),
-  createNote: (noteText) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText }) }),
+  createNote: (noteText, type) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText, type: type || 'text' }) }),
   updateNote: async (id, noteText) => {
     const username = getUsername();
     const response = await fetch(`${CONNECTION_URL}/api/notes/${id}`, {

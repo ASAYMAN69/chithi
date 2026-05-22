@@ -27,6 +27,30 @@
     user-select: none;
 }
 
+/* Custom scrollbar — kawaii pink */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-pink);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-accent);
+    background-clip: content-box;
+    border: 2px solid transparent;
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-pink) transparent;
+}
+
 html,
 body {
     height: 100%;
@@ -131,7 +155,8 @@ body {
 .main-content {
     flex: 1;
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: 
         radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(135, 206, 235, 0.15) 0%, transparent 50%),
@@ -379,6 +404,86 @@ body {
 .toast.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+/* Note Type Toggle (Text / Image) */
+.note-type-toggle {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.note-type-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    background: var(--card-bg);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+}
+
+.note-type-btn.active {
+    background: var(--primary-pink);
+    color: var(--text-primary);
+}
+
+.note-type-btn:not(:last-child) {
+    border-right: 1px solid #000;
+}
+
+/* Image Upload Area inside Add Note Modal */
+.note-image-upload {
+    padding: 4px 0;
+}
+
+.note-upload-dropzone {
+    border: 2px dashed var(--primary-pink);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 182, 193, 0.05);
+}
+
+.note-upload-dropzone:active {
+    background: rgba(255, 182, 193, 0.15);
+    transform: scale(0.98);
+}
+
+.note-upload-dropzone p {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+.note-upload-dropzone small {
+    font-size: 9px;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 4px;
+}
+
+.note-upload-preview {
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Image Thumbnail in Note Cards */
+.note-card-img {
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 2px solid rgba(0,0,0,0.1);
+    min-height: 60px;
 }
 
 /* Utility */

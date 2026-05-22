@@ -24,7 +24,8 @@ const SCHEMA = {
     createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
     updatedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
     isDeleted: 'INTEGER DEFAULT 0',
-    username: 'TEXT NOT NULL'
+    username: 'TEXT NOT NULL',
+    type: 'TEXT DEFAULT "text"'
   },
   reels: {
     id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
@@ -63,6 +64,14 @@ const SCHEMA = {
     note_id: 'INTEGER NOT NULL',
     username: 'TEXT NOT NULL',
     createdAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP'
+  },
+  file_management: {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    key: 'TEXT UNIQUE NOT NULL',
+    fileType: 'TEXT',
+    compressed_path: 'TEXT',
+    original_path: 'TEXT',
+    username: 'TEXT'
   }
 };
 
@@ -76,7 +85,7 @@ const initDB = async () => {
   
   db = new SQL.Database(fileBuffer);
   
-  // Create base tables if they don't exist (with minimal core columns)
+  // Create base tables if they don't exist
   db.run(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, noteText TEXT NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS reels (id INTEGER PRIMARY KEY AUTOINCREMENT, videoPath TEXT NOT NULL, name TEXT NOT NULL)`);
@@ -84,6 +93,7 @@ const initDB = async () => {
   db.run(`CREATE TABLE IF NOT EXISTS weather (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS canvas (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL)`);
   db.run(`CREATE TABLE IF NOT EXISTS note_likes (id INTEGER PRIMARY KEY AUTOINCREMENT, note_id INTEGER NOT NULL, username TEXT NOT NULL, UNIQUE(note_id, username))`);
+  db.run(`CREATE TABLE IF NOT EXISTS file_management (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT UNIQUE NOT NULL)`);
   
   // Automatically sync the rest of the columns
   syncSchema();

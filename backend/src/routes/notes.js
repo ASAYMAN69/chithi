@@ -9,13 +9,13 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const username = req.headers['x-username'];
-  const { noteText } = req.body;
+  const { noteText, type, key } = req.body;
   
   if (!noteText) {
     return res.status(400).json({ error: 'noteText is required' });
   }
   
-  runQuery('INSERT INTO notes (noteText, username, createdAt, updatedAt) VALUES (?, ?, datetime("now"), datetime("now"))', [noteText, username]);
+  runQuery('INSERT INTO notes (noteText, username, type, createdAt, updatedAt) VALUES (?, ?, ?, datetime("now"), datetime("now"))', [noteText, username, type || 'text']);
   
   const newNote = getOne('SELECT * FROM notes WHERE id = (SELECT MAX(id) FROM notes WHERE username = ?)', [username]);
   res.json(newNote);

@@ -211,6 +211,11 @@
     <!-- Note Modal -->
     <div class="modal-overlay" id="noteModal">
         <div class="modal" id="noteModalContent" style="position:relative;">
+            <button class="note-download-btn" id="noteDownloadBtn" title="Download Original" style="display:none;">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+            </button>
             <button class="note-edit-btn" id="editNoteBtn" title="Edit">
                 <svg viewBox="0 0 24 24">
                     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
@@ -223,6 +228,7 @@
             </button>
             <h3 id="noteModalUser">User</h3>
             <p id="noteModalText">Text</p>
+            <img id="noteModalImage" style="max-width:100%;max-height:300px;object-fit:contain;border-radius:12px;display:none;margin-bottom:12px;">
             <button class="note-like-btn" id="noteLikeBtn">
                 <svg viewBox="0 0 24 24" id="noteLikeIcon">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -247,8 +253,26 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
+                <div class="note-type-toggle">
+                    <button class="note-type-btn active" data-mode="text" id="noteTextMode">&#x270D; Text</button>
+                    <button class="note-type-btn" data-mode="image" id="noteImageMode">&#x1F5BC; Image</button>
+                </div>
+                <div class="form-group" id="noteTextGroup">
                     <textarea id="noteText" placeholder="Write something sweet..." rows="4" maxlength="500"></textarea>
+                </div>
+                <div class="note-image-upload" id="noteImageUpload" style="display:none;">
+                    <div class="note-upload-dropzone" id="noteImageDropzone">
+                        <input type="file" id="noteImageInput" accept="image/*" hidden>
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--primary-pink)">
+                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                        </svg>
+                        <p>Click to select an image</p>
+                        <small>Max 5MB (jpg, png, gif, webp)</small>
+                    </div>
+                    <div class="note-upload-preview" id="noteImagePreview" style="display:none;">
+                        <img id="noteImagePreviewImg" style="max-width:100%;max-height:180px;object-fit:contain;border-radius:8px;">
+                        <p id="noteImageFileName" style="font-size:11px;margin-top:6px;color:var(--text-secondary);"></p>
+                    </div>
                 </div>
             </div>
             <div class="modal-actions">
@@ -315,7 +339,17 @@
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/music.js"></script>
+    <script src="js/notes.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/init.js"></script>
     <script src="js/iframe-highlighter.js"></script>
 
 </body>

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const { authMiddleware, loadAllowedUsers } = require('./middleware/auth');
 const { initDB, closeDB } = require('./db');
@@ -12,6 +13,18 @@ const PORT = process.env.PORT || 6767;
 app.use(cors());
 app.use(express.json());
 
+// CDN images: keys are unguessable UUIDs, access gated at API level
+app.get('/cdn/images/:key', (req, res) => {
+  const key = req.params.key.replace(/\.webp$/i, '');
+  const imagePath = path.join(CDN_DIR, 'images', `${key}.webp`);
+  if (!fs.existsSync(imagePath)) {
+    return res.status(404).json({ error: 'Image not found' });
+  }
+  res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  res.sendFile(imagePath);
+});
+
+// Static CDN for music, videos (images handled above)
 app.use('/cdn', express.static(CDN_DIR, {
   etag: true,
   lastModified: true,
@@ -21,8 +34,6 @@ app.use('/cdn', express.static(CDN_DIR, {
       res.set('Cache-Control', 'public, max-age=86400');
     } else if (['.mp4', '.webm'].includes(ext)) {
       res.set('Cache-Control', 'public, max-age=604800');
-    } else if (['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext)) {
-      res.set('Cache-Control', 'public, max-age=31536000, immutable');
     }
   }
 }));
@@ -37,6 +48,7 @@ app.use('/api/canvas', require('./routes/canvas'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/user', require('./routes/users'));
 app.use('/api/note-likes', require('./routes/noteLikes'));
+app.use('/api/files', require('./routes/files'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

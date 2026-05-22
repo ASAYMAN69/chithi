@@ -105,10 +105,48 @@
     color: var(--text-secondary);
 }
 
+@keyframes note-download-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.note-download-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(72, 187, 120, 0.25);
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: note-download-bounce 2s ease-in-out infinite;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.note-download-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--text-primary);
+    transition: transform 0.3s ease;
+}
+
+.note-download-btn:hover {
+    background: rgba(72, 187, 120, 0.45);
+    transform: scale(1.1);
+}
+
+.note-download-btn:hover svg {
+    transform: rotate(8deg);
+}
+
 .note-edit-btn {
     position: absolute;
     top: 12px;
-    right: 50px;
+    right: 58px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
