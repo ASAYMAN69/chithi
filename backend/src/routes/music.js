@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
-const { getAll, getOne, runQuery } = require('../db');
+const { getAll, getOne, runQuery, nowISO } = require('../db');
 
 router.get('/', (req, res) => {
   const username = req.headers['x-username'];
@@ -28,8 +28,8 @@ router.post('/', (req, res) => {
 
   runQuery(
     `INSERT INTO music (musicPath, thumbnailPath, name, description, priority, username, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, datetime("now"))`,
-    [musicPath, thumbnailPath || '', name, description || '', priority || 0, username]
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [musicPath, thumbnailPath || '', name, description || '', priority || 0, username, nowISO()]
   );
 
   const newMusic = getOne('SELECT * FROM music WHERE id = (SELECT MAX(id) FROM music WHERE username = ?)', [username]);
@@ -54,9 +54,9 @@ router.post('/tracks', (req, res) => {
   const id = uuidv4();
 
   runQuery(
-    `INSERT INTO music_tracks (id, key, musicPath, username, name, author)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [id, key, musicPath, username, name || '', author || '']
+    `INSERT INTO music_tracks (id, key, musicPath, username, name, author, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [id, key, musicPath, username, name || '', author || '', nowISO()]
   );
 
   const newTrack = getOne('SELECT * FROM music_tracks WHERE id = ?', [id]);

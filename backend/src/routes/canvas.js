@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getOne, runQuery } = require('../db');
+const { getOne, runQuery, nowISO } = require('../db');
 
 router.get('/', (req, res) => {
   const username = req.headers['x-username'];
@@ -21,9 +21,9 @@ router.post('/', (req, res) => {
   const existing = getOne('SELECT * FROM canvas WHERE username = ?', [username]);
   
   if (existing) {
-    runQuery('UPDATE canvas SET canvasData = ?, updatedAt = datetime("now") WHERE username = ?', [canvasData, username]);
+    runQuery('UPDATE canvas SET canvasData = ?, updatedAt = ? WHERE username = ?', [canvasData, nowISO(), username]);
   } else {
-    runQuery('INSERT INTO canvas (username, canvasData, updatedAt) VALUES (?, ?, datetime("now"))', [username, canvasData]);
+    runQuery('INSERT INTO canvas (username, canvasData, updatedAt) VALUES (?, ?, ?)', [username, canvasData, nowISO()]);
   }
   
   const updated = getOne('SELECT * FROM canvas WHERE username = ?', [username]);

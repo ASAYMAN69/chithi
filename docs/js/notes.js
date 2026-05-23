@@ -86,6 +86,9 @@ const openNoteModal = async (note) => {
         }
     }
 
+    const tsEl = document.getElementById('noteTimestamp');
+    if (tsEl) tsEl.textContent = formatNoteTime(note.createdAt);
+
     openModal(noteModal);
 };
 
@@ -186,6 +189,17 @@ const loadLikedNotes = () => {
     }
 };
 
+const formatNoteTime = (dateStr) => {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return '';
+  }
+};
+
 const loadNotes = async () => {
     try {
         const notes = await API.getNotes();
@@ -202,11 +216,12 @@ const loadNotes = async () => {
             card.style.display = 'block';
             card.dataset.id = note.id;
 
+            const editedBadge = note.createdAt !== note.updatedAt ? `<span class="note-edited-badge">Edited ${formatNoteTime(note.updatedAt)}</span>` : '';
             if (note.type === 'image' && note.noteText) {
                 const imgUrl = getImageCdnUrl(note.noteText);
-                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>`;
+                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>${editedBadge}`;
             } else {
-                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>`;
+                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>${editedBadge}`;
             }
 
             card.addEventListener('click', () => openNoteModal(note));

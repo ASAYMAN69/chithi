@@ -6,6 +6,7 @@ const fs = require('fs');
 const { authMiddleware, loadAllowedUsers } = require('./middleware/auth');
 const { initDB, closeDB } = require('./db');
 const { ensureDirs, CDN_DIR } = require('./utils/paths');
+const { initWS } = require('./ws');
 
 const app = express();
 const PORT = process.env.PORT || 6767;
@@ -58,10 +59,12 @@ const startServer = async () => {
   await initDB();
   console.log('Database initialized');
   
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Chithi server running on port ${PORT}`);
     loadAllowedUsers();
   });
+  
+  initWS(server);
 };
 
 startServer().catch((err) => {

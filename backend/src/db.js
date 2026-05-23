@@ -6,6 +6,22 @@ const dbPath = getDBPath();
 let db;
 
 /**
+ * Returns the current server time as an ISO 8601 string with timezone offset.
+ * Example: "2024-01-15T14:30:00+06:00"
+ * The frontend can parse this via `new Date()` to get the correct local time.
+ */
+const nowISO = () => {
+  const now = new Date();
+  const offset = -now.getTimezoneOffset();
+  const sign = offset >= 0 ? '+' : '-';
+  const absOffset = Math.abs(offset);
+  const oh = String(Math.floor(absOffset / 60)).padStart(2, '0');
+  const om = String(absOffset % 60).padStart(2, '0');
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}${sign}${oh}:${om}`;
+};
+
+/**
  * Single Source of Truth for the Database Schema.
  * Add new columns here, and they will be automatically added to the database on startup.
  */
@@ -201,4 +217,4 @@ const getAll = (sql, params = []) => {
   return results;
 };
 
-module.exports = { initDB, getDB, saveDB, closeDB, runQuery, getOne, getAll };
+module.exports = { initDB, getDB, saveDB, closeDB, runQuery, getOne, getAll, nowISO };

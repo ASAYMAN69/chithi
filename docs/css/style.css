@@ -101,6 +101,43 @@ body {
     gap: 12px;
 }
 
+/* Activity Status (Online / Offline / Typing) */
+.activity-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: var(--primary-pink-light);
+    border-radius: var(--radius-sm);
+    max-width: 140px;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.activity-dot.online {
+    background: #4CAF50;
+    box-shadow: 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+.activity-dot.offline {
+    background: #bbb;
+}
+
+.activity-text {
+    font-size: 9px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+}
+
 .icon-btn {
     width: 44px;
     height: 44px;
@@ -298,6 +335,25 @@ body {
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.5px;
+}
+
+.note-edited-badge {
+    display: inline-block;
+    font-size: 8px;
+    color: var(--text-secondary);
+    background: rgba(0,0,0,0.06);
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-top: 6px;
+    align-self: flex-start;
+}
+
+.note-timestamp {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 8px;
+    opacity: 0.7;
 }
 
 .note-card p {

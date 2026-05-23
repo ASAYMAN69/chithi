@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getAll, getOne, runQuery, saveDB } = require('../db');
+const { getAll, getOne, runQuery, saveDB, nowISO } = require('../db');
+const { broadcastWS } = require('../ws');
 
 router.get('/', (req, res) => {
   const notes = getAll('SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC');
@@ -15,7 +16,9 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: 'noteText is required' });
   }
   
-  runQuery('INSERT INTO notes (noteText, username, type, createdAt, updatedAt) VALUES (?, ?, ?, datetime("now"), datetime("now"))', [noteText, username, type || 'text']);
+  runQuery('INSERT INTO notes (noteText, username, type, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)', [noteText, username, type || 'text', nowISO(), nowISO()]);
+  
+  broadcastWS({ type: 'notes_updated' });
   
   const newNote = getOne('SELECT * FROM notes WHERE id = (SELECT MAX(id) FROM notes WHERE username = ?)', [username]);
   res.json(newNote);
@@ -35,7 +38,9 @@ router.put('/:id', (req, res) => {
     return res.status(403).json({ error: 'Unauthorized to edit this note' });
   }
   
-  runQuery('UPDATE notes SET noteText = ?, updatedAt = datetime("now") WHERE id = ? AND username = ?', [noteText, id, username]);
+  runQuery('UPDATE notes SET noteText = ?, updatedAt = ? WHERE id = ? AND username = ?', [noteText, nowISO(), id, username]);
+  
+  broadcastWS({ type: 'notes_updated' });
   
   const updated = getOne('SELECT * FROM notes WHERE id = ?', [id]);
   res.json(updated);
@@ -58,7 +63,9 @@ router.delete('/:id', (req, res) => {
     return res.status(403).json({ error: 'Unauthorized to delete this note' });
   }
   
-  runQuery('UPDATE notes SET isDeleted = 1, updatedAt = datetime("now") WHERE id = ? AND username = ?', [id, username]);
+  runQuery('UPDATE notes SET isDeleted = 1, updatedAt = ? WHERE id = ? AND username = ?', [nowISO(), id, username]);
+  
+  broadcastWS({ type: 'notes_updated' });
   
   res.json({ success: true });
 });

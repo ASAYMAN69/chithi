@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAll, getOne, runQuery } = require('../db');
+const { getAll, getOne, runQuery, nowISO } = require('../db');
 
 router.get('/:noteId', (req, res) => {
   const { noteId } = req.params;
@@ -25,7 +25,7 @@ router.post('/:noteId', (req, res) => {
     return res.status(400).json({ error: 'Already liked' });
   }
   
-  runQuery('INSERT INTO note_likes (note_id, username, createdAt) VALUES (?, ?, datetime("now"))', [noteId, username]);
+  runQuery('INSERT INTO note_likes (note_id, username, createdAt) VALUES (?, ?, ?)', [noteId, username, nowISO()]);
   
   const likes = getAll('SELECT username FROM note_likes WHERE note_id = ?', [noteId]);
   res.json(likes);

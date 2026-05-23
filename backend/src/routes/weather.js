@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getOne, runQuery } = require('../db');
+const { getOne, runQuery, nowISO } = require('../db');
 const fs = require('fs');
 const axios = require('axios');
 const { getLocationsPath } = require('../utils/paths');
@@ -48,10 +48,10 @@ router.get('/', async (req, res) => {
     const weatherCondition = mapWeatherCode(weatherCode);
     
     if (cached) {
-      runQuery('UPDATE weather SET weather_condition = ?, cachedAt = datetime("now") WHERE id = ?', [weatherCondition, cached.id]);
+      runQuery('UPDATE weather SET weather_condition = ?, cachedAt = ? WHERE id = ?', [weatherCondition, nowISO(), cached.id]);
     } else {
-      runQuery('INSERT INTO weather (username, latitude, longitude, weather_condition, cachedAt) VALUES (?, ?, ?, ?, datetime("now"))',
-        [username, lat, lon, weatherCondition]);
+      runQuery('INSERT INTO weather (username, latitude, longitude, weather_condition, cachedAt) VALUES (?, ?, ?, ?, ?)',
+        [username, lat, lon, weatherCondition, nowISO()]);
     }
     
     const updated = getOne('SELECT * FROM weather WHERE username = ?', [username]);

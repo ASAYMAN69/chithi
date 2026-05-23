@@ -17,15 +17,15 @@
     <style>
         body { font-family: 'Press Start 2P', cursive; }
     </style>
-    <link rel="stylesheet" href="css/style.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/ray.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/weather.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/reel.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/profile.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/modal.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/button.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/music-player.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
-    <link rel="stylesheet" href="css/disc.css?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b">
+    <link rel="stylesheet" href="css/style.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/ray.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/weather.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/reel.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/profile.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/modal.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/button.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/music-player.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
+    <link rel="stylesheet" href="css/disc.css?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4">
 </head>
 
 <body>
@@ -69,6 +69,10 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
+                <div class="activity-status" id="activityStatus">
+                    <span class="activity-dot offline" id="activityDot"></span>
+                    <span class="activity-text" id="activityText">Offline</span>
+                </div>
             </div>
             <div class="header-right">
                 <div class="disc-wrapper" id="discWrapper">
@@ -283,6 +287,7 @@
             </button>
             <h3 id="noteModalUser">User</h3>
             <p id="noteModalText">Text</p>
+            <div class="note-timestamp" id="noteTimestamp"></div>
             <img id="noteModalImage" style="max-width:100%;max-height:300px;object-fit:contain;border-radius:12px;display:none;margin-bottom:12px;">
             <button class="note-like-btn" id="noteLikeBtn">
                 <svg viewBox="0 0 24 24" id="noteLikeIcon">
@@ -392,21 +397,22 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/config.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/api.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/storage.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/state.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/elements.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/utils.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/auth.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/profile.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/music.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/notes.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/weather.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/upload.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/init.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
-    <script src="js/iframe-highlighter.js?v=f5c67172-ff5e-6e55-8efd-5b58a35dd55b"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/config.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/api.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/storage.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/state.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/elements.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/utils.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/auth.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/profile.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/music.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/notes.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/weather.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/upload.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/init.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/ws.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
+    <script src="js/iframe-highlighter.js?v=7e9a2b1c-3d4f-5a6b-7c8d-9e0fa1b2c3d4"></script>
 
 </body>
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAll, getOne, runQuery } = require('../db');
+const { getAll, getOne, runQuery, nowISO } = require('../db');
 
 router.get('/', (req, res) => {
   const reels = getAll('SELECT * FROM reels ORDER BY createdAt DESC');
@@ -15,8 +15,8 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: 'videoPath and name are required' });
   }
   
-  runQuery('INSERT INTO reels (videoPath, name, description, username, createdAt) VALUES (?, ?, ?, ?, datetime("now"))', 
-    [videoPath, name, description || '', username]);
+  runQuery('INSERT INTO reels (videoPath, name, description, username, createdAt) VALUES (?, ?, ?, ?, ?)', 
+    [videoPath, name, description || '', username, nowISO()]);
   
   const newReel = getOne('SELECT * FROM reels WHERE id = (SELECT MAX(id) FROM reels)');
   res.json(newReel);
