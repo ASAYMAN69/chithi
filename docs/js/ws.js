@@ -34,10 +34,11 @@ const connectWS = () => {
   if (ws && (ws.readyState === 0 || ws.readyState === 1)) return;
 
   const username = localStorage.getItem('user');
-  if (!username) return;
+  const password = localStorage.getItem('password');
+  if (!username || !password) return;
 
   const baseUrl = window.__API_BASE_URL || CONNECTION_URL;
-  const wsUrl = `${toWsUrl(baseUrl)}/ws?username=${encodeURIComponent(username)}`;
+  const wsUrl = `${toWsUrl(baseUrl)}/ws?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
   try {
     ws = new WebSocket(wsUrl);

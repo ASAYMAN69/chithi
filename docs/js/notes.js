@@ -14,7 +14,9 @@ let noteImageKey = null;
 let noteImageFile = null;
 
 const getImageCdnUrl = (key) => {
-    return `${CONNECTION_URL}/cdn/images/${key}.webp`;
+    const user = localStorage.getItem('user');
+    const pass = localStorage.getItem('password');
+    return `${CONNECTION_URL}/cdn/images/${key}.webp?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
 };
 
 const openNoteModal = async (note) => {
@@ -112,7 +114,7 @@ elements.noteDownloadBtn.addEventListener('click', async () => {
     if (!key) return;
     try {
         const response = await fetch(`${CONNECTION_URL}/api/files/${key}/download`, {
-            headers: { 'X-Username': localStorage.getItem('user') }
+            headers: { 'X-Username': localStorage.getItem('user'), 'X-Password': localStorage.getItem('password') }
         });
         if (!response.ok) {
             const err = await response.json();

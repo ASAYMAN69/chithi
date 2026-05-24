@@ -1,4 +1,5 @@
 const { WebSocketServer } = require('ws');
+const { isValidUser } = require('./middleware/auth');
 
 const users = new Map();
 
@@ -30,6 +31,13 @@ const initWS = (server) => {
 
     if (!username) {
       ws.close(4000, 'username required');
+      return;
+    }
+
+    const password = url.searchParams.get('password') || '';
+
+    if (!isValidUser(username, password)) {
+      ws.close(4000, 'authentication failed');
       return;
     }
 

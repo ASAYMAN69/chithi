@@ -4,9 +4,11 @@ const showUserModal = () => {
     modal.classList.add('active');
     modal.style.display = 'flex';
     document.getElementById('saveUsername').addEventListener('click', saveUsername);
-    document.getElementById('usernameInput').addEventListener('keypress', (e) => {
+    const keyHandler = (e) => {
         if (e.key === 'Enter') saveUsername();
-    });
+    };
+    document.getElementById('usernameInput').addEventListener('keypress', keyHandler);
+    document.getElementById('passwordInput').addEventListener('keypress', keyHandler);
 };
 
 const hideUserModal = () => {
@@ -17,7 +19,8 @@ const hideUserModal = () => {
 
 const checkUser = async () => {
     const user = localStorage.getItem('user');
-    if (!user) {
+    const password = localStorage.getItem('password');
+    if (!user || !password) {
         showUserModal();
         return;
     }
@@ -27,6 +30,7 @@ const checkUser = async () => {
         hideUserModal();
     } catch (e) {
         localStorage.removeItem('user');
+        localStorage.removeItem('password');
         showUserModal();
     }
 };
@@ -38,7 +42,14 @@ const saveUsername = async () => {
         return;
     }
 
+    const password = document.getElementById('passwordInput').value.trim();
+    if (!password) {
+        showToast('Please enter a password');
+        return;
+    }
+
     localStorage.setItem('user', name);
+    localStorage.setItem('password', password);
 
     try {
         await API.getUser();
@@ -46,6 +57,7 @@ const saveUsername = async () => {
         init();
     } catch (e) {
         localStorage.removeItem('user');
-        showToast('Username not authorized. Ask the admin to add you.');
+        localStorage.removeItem('password');
+        showToast('Username or password not authorized. Ask the admin to add you.');
     }
 };

@@ -1,10 +1,13 @@
 const getUsername = () => localStorage.getItem('user') || '';
+const getPassword = () => localStorage.getItem('password') || '';
 
 const apiFetch = async (endpoint, options = {}) => {
   const username = getUsername();
+  const password = getPassword();
   const headers = {
     'Content-Type': 'application/json',
     'X-Username': username,
+    'X-Password': password,
     ...options.headers
   };
 
@@ -30,9 +33,10 @@ const API = {
   createNote: (noteText, type) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText, type: type || 'text' }) }),
   updateNote: async (id, noteText) => {
     const username = getUsername();
+    const password = getPassword();
     const response = await fetch(`${CONNECTION_URL}/api/notes/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Username': username },
+      headers: { 'Content-Type': 'application/json', 'X-Username': username, 'X-Password': password },
       body: JSON.stringify({ noteText })
     });
     if (!response.ok) {
@@ -47,9 +51,10 @@ const API = {
   getNoteLikes: (noteId) => apiFetch(`/api/note-likes/${noteId}`),
   likeNote: async (noteId) => {
     const username = getUsername();
+    const password = getPassword();
     const response = await fetch(`${CONNECTION_URL}/api/note-likes/${noteId}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Username': username }
+      headers: { 'Content-Type': 'application/json', 'X-Username': username, 'X-Password': password }
     });
     if (!response.ok) {
       const err = await response.json();
@@ -59,9 +64,10 @@ const API = {
   },
   unlikeNote: async (noteId) => {
     const username = getUsername();
+    const password = getPassword();
     const response = await fetch(`${CONNECTION_URL}/api/note-likes/${noteId}`, {
       method: 'DELETE',
-      headers: { 'X-Username': username }
+      headers: { 'X-Username': username, 'X-Password': password }
     });
     return response.json();
   },
@@ -81,6 +87,7 @@ const API = {
   // Upload (returns URL)
   async uploadFile(type, file) {
     const username = getUsername();
+    const password = getPassword();
     const formData = new FormData();
     formData.append('file', file);
 
@@ -89,7 +96,7 @@ const API = {
 
     const response = await fetch(`${CONNECTION_URL}${endpoint}`, {
       method: 'POST',
-      headers: { 'X-Username': username },
+      headers: { 'X-Username': username, 'X-Password': password },
       body: formData
     });
 
@@ -100,12 +107,13 @@ const API = {
   // Music file upload (returns {key, ext})
   async uploadMusicFile(file) {
     const username = getUsername();
+    const password = getPassword();
     const formData = new FormData();
     formData.append('file', file);
 
     const response = await fetch(`${CONNECTION_URL}/api/upload/music-file`, {
       method: 'POST',
-      headers: { 'X-Username': username },
+      headers: { 'X-Username': username, 'X-Password': password },
       body: formData
     });
 

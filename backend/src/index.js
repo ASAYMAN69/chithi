@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-const { authMiddleware, loadAllowedUsers } = require('./middleware/auth');
+const { authMiddleware, loadAllowedUsers, isValidUser } = require('./middleware/auth');
 const { initDB, closeDB } = require('./db');
 const { ensureDirs, CDN_DIR } = require('./utils/paths');
 const { initWS } = require('./ws');
@@ -16,6 +16,13 @@ app.use(express.json());
 
 // CDN images: keys are unguessable UUIDs, access gated at API level
 app.get('/cdn/images/:key', (req, res) => {
+  const username = req.headers['x-username'] || req.query.username;
+  const password = req.headers['x-password'] || req.query.password;
+
+  if (!isValidUser(username, password)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const key = req.params.key.replace(/\.webp$/i, '');
   const imagePath = path.join(CDN_DIR, 'images', `${key}.webp`);
   if (!fs.existsSync(imagePath)) {

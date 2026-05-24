@@ -56,9 +56,21 @@ async function setup() {
     process.exit(1);
   }
   
+  const mainPassword = await question(`Enter password for ${mainUsername}: `);
+  if (!mainPassword.trim()) {
+    console.log('Password is required');
+    process.exit(1);
+  }
+  
   const secondaryUsername = await question('Enter secondary username: ');
   if (!secondaryUsername.trim()) {
     console.log('Secondary username is required');
+    process.exit(1);
+  }
+  
+  const secondaryPassword = await question(`Enter password for ${secondaryUsername}: `);
+  if (!secondaryPassword.trim()) {
+    console.log('Password is required');
     process.exit(1);
   }
   
@@ -66,7 +78,12 @@ async function setup() {
   
   fs.writeFileSync(
     getAllowedUsersPath(),
-    JSON.stringify({ usernames: [mainUsername, secondaryUsername] }, null, 2)
+    JSON.stringify({
+      users: {
+        [mainUsername]: mainPassword,
+        [secondaryUsername]: secondaryPassword
+      }
+    }, null, 2)
   );
   console.log('Allowed users saved');
   
