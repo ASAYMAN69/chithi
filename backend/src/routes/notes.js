@@ -4,8 +4,11 @@ const { getAll, getOne, runQuery, saveDB, nowISO } = require('../db');
 const { broadcastWS } = require('../ws');
 
 router.get('/', (req, res) => {
-  const notes = getAll('SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC');
-  res.json(notes);
+  const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+  const offset = parseInt(req.query.offset) || 0;
+  const notes = getAll('SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT ? OFFSET ?', [limit, offset]);
+  const total = getOne('SELECT COUNT(*) as count FROM notes WHERE isDeleted = 0');
+  res.json({ notes, hasMore: offset + limit < total.count });
 });
 
 router.post('/', (req, res) => {

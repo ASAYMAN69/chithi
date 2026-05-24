@@ -136,17 +136,17 @@ const disconnectWS = () => {
   }
 };
 
-// Auto-init: connect immediately if user known, otherwise poll until auth completes
 const initWS = () => {
   setupTypingDetection(document.getElementById('noteText'));
 
   const user = localStorage.getItem('user');
-  if (user) {
+  const pass = localStorage.getItem('password');
+  if (user && pass) {
     connectWS();
     return;
   }
   const poll = setInterval(() => {
-    if (localStorage.getItem('user')) {
+    if (localStorage.getItem('user') && localStorage.getItem('password')) {
       clearInterval(poll);
       connectWS();
     }

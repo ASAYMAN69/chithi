@@ -8,6 +8,12 @@ const closeNoteModal = document.getElementById('closeNoteModal');
 let currentNoteId = null;
 let likedNotes = new Set();
 
+let noteOffset = 0;
+let hasMoreNotes = true;
+let isLoadingNotes = false;
+const NOTES_INITIAL = 20;
+const NOTES_PAGE = 10;
+
 // Image note state
 let noteMode = 'text';
 let noteImageKey = null;
@@ -202,37 +208,70 @@ const formatNoteTime = (dateStr) => {
   }
 };
 
-const loadNotes = async () => {
+const renderNoteCards = (notes, startIndex) => {
+    const container = document.getElementById('notesDisplay');
+    if (!container) return;
+
+    const colors = ['#FFB6C1', '#87CEEB', '#98D8C8', '#FFD700', '#DDA0DD'];
+
+    notes.forEach((note, i) => {
+        const card = document.createElement('div');
+        card.className = 'note-card';
+        card.style.backgroundColor = colors[(startIndex + i) % colors.length];
+        card.style.display = 'block';
+        card.dataset.id = note.id;
+
+        const editedBadge = note.createdAt !== note.updatedAt ? `<span class="note-edited-badge">Edited ${formatNoteTime(note.updatedAt)}</span>` : '';
+        if (note.type === 'image' && note.noteText) {
+            const imgUrl = getImageCdnUrl(note.noteText);
+            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>${editedBadge}`;
+        } else {
+            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>${editedBadge}`;
+        }
+
+        card.addEventListener('click', () => openNoteModal(note));
+        container.appendChild(card);
+    });
+};
+
+const loadMoreNotes = async () => {
+    if (isLoadingNotes || !hasMoreNotes) return;
+    isLoadingNotes = true;
     try {
-        const notes = await API.getNotes();
-        const container = document.getElementById('notesDisplay');
-        if (!container) return;
-        container.innerHTML = '';
-
-        const colors = ['#FFB6C1', '#87CEEB', '#98D8C8', '#FFD700', '#DDA0DD'];
-
-        notes.forEach((note, index) => {
-            const card = document.createElement('div');
-            card.className = 'note-card';
-            card.style.backgroundColor = colors[index % colors.length];
-            card.style.display = 'block';
-            card.dataset.id = note.id;
-
-            const editedBadge = note.createdAt !== note.updatedAt ? `<span class="note-edited-badge">Edited ${formatNoteTime(note.updatedAt)}</span>` : '';
-            if (note.type === 'image' && note.noteText) {
-                const imgUrl = getImageCdnUrl(note.noteText);
-                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>${editedBadge}`;
-            } else {
-                card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>${editedBadge}`;
-            }
-
-            card.addEventListener('click', () => openNoteModal(note));
-            container.appendChild(card);
-        });
+        const limit = noteOffset === 0 ? NOTES_INITIAL : NOTES_PAGE;
+        const data = await API.getNotes(noteOffset, limit);
+        const notes = data.notes || [];
+        hasMoreNotes = data.hasMore;
+        renderNoteCards(notes, noteOffset);
+        noteOffset += notes.length;
     } catch (err) {
         console.error('Load notes error:', err);
+    } finally {
+        isLoadingNotes = false;
     }
 };
+
+const loadNotes = async () => {
+    noteOffset = 0;
+    hasMoreNotes = true;
+    const container = document.getElementById('notesDisplay');
+    if (!container) return;
+    container.innerHTML = '';
+    await loadMoreNotes();
+};
+
+const mainContent = document.querySelector('.main-content');
+
+const handleNotesScroll = () => {
+    if (isLoadingNotes || !hasMoreNotes || !mainContent) return;
+    if (mainContent.scrollTop + mainContent.clientHeight >= mainContent.scrollHeight - 400) {
+        loadMoreNotes();
+    }
+};
+
+if (mainContent) {
+    mainContent.addEventListener('scroll', handleNotesScroll, { passive: true });
+}
 
 // ==================== Image Mode Toggle ====================
 const switchNoteMode = (mode) => {

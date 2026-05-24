@@ -29,7 +29,7 @@ const API = {
   updateUser: (data) => apiFetch('/api/user', { method: 'PUT', body: JSON.stringify(data) }),
 
   // Notes
-  getNotes: () => apiFetch('/api/notes'),
+  getNotes: (offset = 0, limit = 20) => apiFetch(`/api/notes?offset=${offset}&limit=${limit}`),
   createNote: (noteText, type) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText, type: type || 'text' }) }),
   updateNote: async (id, noteText) => {
     const username = getUsername();
