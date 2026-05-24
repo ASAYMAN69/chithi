@@ -151,4 +151,18 @@ router.post('/music-file', audioUpload.single('file'), async (req, res) => {
   res.json({ success: true, key });
 });
 
+router.post('/voice', audioUpload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const username = req.headers['x-username'];
+  const key = uuidv4();
+
+  runQuery('INSERT INTO file_management (key, fileType, original_path, username) VALUES (?, ?, ?, ?)',
+    [key, 'voice', req.file.path, username]);
+
+  res.json({ success: true, key });
+});
+
 module.exports = router;

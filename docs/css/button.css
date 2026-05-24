@@ -26,9 +26,6 @@
 
 /* Add Note Button */
 .add-note-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -38,7 +35,6 @@
     font-size: 28px;
     cursor: pointer;
     box-shadow: var(--shadow-lg);
-    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;

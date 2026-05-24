@@ -104,6 +104,23 @@ const API = {
     return response.json();
   },
 
+  async uploadVoice(blob) {
+    const username = getUsername();
+    const password = getPassword();
+    const formData = new FormData();
+    const file = new File([blob], 'voice.webm', { type: blob.type });
+    formData.append('file', file);
+
+    const response = await fetch(`${CONNECTION_URL}/api/upload/voice`, {
+      method: 'POST',
+      headers: { 'X-Username': username, 'X-Password': password },
+      body: formData
+    });
+
+    if (!response.ok) throw new Error('Voice upload failed');
+    return response.json();
+  },
+
   // Music file upload (returns {key, ext})
   async uploadMusicFile(file) {
     const username = getUsername();

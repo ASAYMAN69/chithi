@@ -542,6 +542,352 @@ body {
     min-height: 60px;
 }
 
+/* ==================== FAB Group ==================== */
+.fab-group {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+}
+
+.voice-trigger-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--primary-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.voice-trigger-btn:active {
+    transform: scale(0.9);
+    background: var(--primary-pink-light);
+}
+
+.voice-trigger-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--primary-deep);
+}
+
+/* ==================== Voice Recording Modal ==================== */
+.voice-modal-overlay {
+    background: rgba(30, 20, 25, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.voice-modal {
+    max-width: 320px;
+    background: linear-gradient(160deg, #fff9fa 0%, #fff1f3 100%);
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(200, 100, 120, 0.25);
+    overflow: hidden;
+}
+
+.voice-modal-header {
+    padding: 20px 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.voice-modal-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.voice-modal-body {
+    padding: 24px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Record button stage with glow backdrop */
+.voice-record-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+}
+
+.voice-record-glow {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 182, 193, 0.3) 0%, transparent 70%);
+    transition: all 0.4s ease;
+}
+
+.voice-record-glow.active {
+    background: radial-gradient(circle, rgba(255, 71, 87, 0.25) 0%, rgba(255, 71, 87, 0.05) 60%, transparent 80%);
+    animation: glowPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+
+.voice-record-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffe4e8 0%, #ffd0d8 100%);
+    border: 3px solid var(--primary-pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 16px rgba(255, 182, 193, 0.3);
+}
+
+.voice-record-btn:active {
+    transform: scale(0.92);
+}
+
+.voice-record-btn.recording {
+    background: linear-gradient(135deg, #ffe0e0 0%, #ffc8c8 100%);
+    border-color: #ff4757;
+    box-shadow: 0 4px 20px rgba(255, 71, 87, 0.35);
+}
+
+.voice-record-icon svg,
+.voice-record-pause svg,
+.voice-record-play svg {
+    width: 36px;
+    height: 36px;
+    fill: var(--primary-deep);
+}
+
+.voice-record-btn.recording .voice-record-pause svg {
+    fill: #ff4757;
+}
+
+.voice-record-btn.paused .voice-record-play svg {
+    fill: var(--primary-deep);
+}
+
+/* Timer */
+.voice-record-timer {
+    font-size: 42px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+    line-height: 1;
+    margin-top: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Mono", "PingFang SC", monospace;
+}
+
+/* Status */
+.voice-record-status {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+/* Waveform */
+.voice-record-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 36px;
+    padding: 4px 0;
+}
+
+.voice-record-wave span {
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(to top, var(--primary-pink), var(--primary-accent));
+    animation: waveBounce 0.9s ease-in-out infinite alternate;
+}
+
+.voice-record-wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.voice-record-wave span:nth-child(2) { height: 20px; animation-delay: 0.08s; }
+.voice-record-wave span:nth-child(3) { height: 12px; animation-delay: 0.16s; }
+.voice-record-wave span:nth-child(4) { height: 28px; animation-delay: 0.24s; }
+.voice-record-wave span:nth-child(5) { height: 16px; animation-delay: 0.32s; }
+.voice-record-wave span:nth-child(6) { height: 32px; animation-delay: 0.4s; }
+.voice-record-wave span:nth-child(7) { height: 14px; animation-delay: 0.48s; }
+.voice-record-wave span:nth-child(8) { height: 24px; animation-delay: 0.56s; }
+.voice-record-wave span:nth-child(9) { height: 10px; animation-delay: 0.64s; }
+.voice-record-wave span:nth-child(10) { height: 26px; animation-delay: 0.72s; }
+.voice-record-wave span:nth-child(11) { height: 18px; animation-delay: 0.8s; }
+.voice-record-wave span:nth-child(12) { height: 22px; animation-delay: 0.14s; }
+.voice-record-wave span:nth-child(13) { height: 8px; animation-delay: 0.36s; }
+.voice-record-wave span:nth-child(14) { height: 28px; animation-delay: 0.52s; }
+.voice-record-wave span:nth-child(15) { height: 14px; animation-delay: 0.68s; }
+
+@keyframes waveBounce {
+    0% { transform: scaleY(0.4); opacity: 0.5; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Preview */
+.voice-preview {
+    width: 100%;
+    padding: 8px 0;
+}
+
+.voice-preview audio {
+    border-radius: 10px;
+    width: 100%;
+}
+
+/* Voice modal actions */
+.voice-modal-actions {
+    padding: 12px 20px 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.voice-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.voice-btn:active {
+    transform: scale(0.97);
+}
+
+.voice-btn-secondary {
+    background: var(--primary-pink-light);
+    color: var(--text-primary);
+}
+
+.voice-btn-primary {
+    background: linear-gradient(135deg, var(--primary-accent) 0%, var(--primary-deep) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 143, 171, 0.35);
+}
+
+.voice-btn-primary svg {
+    fill: white;
+}
+
+.voice-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Voice Note Card in Feed */
+.note-card-voice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+
+.note-card-voice-play {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-pink);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.note-card-voice-play:active {
+    transform: scale(0.9);
+}
+
+.note-card-voice-play svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+    margin-left: 2px;
+}
+
+.note-card-voice-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.note-card-voice-duration {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.note-card-voice-progress {
+    height: 4px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 4px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.note-card-voice-progress-fill {
+    height: 100%;
+    background: var(--primary-accent);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s linear;
+}
+
+/* ==================== Voice Speed ==================== */
+.voice-speed-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1.5px solid var(--primary-accent);
+    background: transparent;
+    color: var(--primary-accent);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.voice-speed-btn:hover {
+    background: var(--primary-accent);
+    color: white;
+}
+
 /* Utility */
 .sr-only {
     position: absolute;

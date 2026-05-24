@@ -17,15 +17,15 @@
     <style>
         body { font-family: 'Press Start 2P', cursive; }
     </style>
-    <link rel="stylesheet" href="css/style.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/ray.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/weather.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/reel.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/profile.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/modal.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/button.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/music-player.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
-    <link rel="stylesheet" href="css/disc.css?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e">
+    <link rel="stylesheet" href="css/style.css?v=20260525">
+    <link rel="stylesheet" href="css/ray.css?v=20260525">
+    <link rel="stylesheet" href="css/weather.css?v=20260525">
+    <link rel="stylesheet" href="css/reel.css?v=20260525">
+    <link rel="stylesheet" href="css/profile.css?v=20260525">
+    <link rel="stylesheet" href="css/modal.css?v=20260525">
+    <link rel="stylesheet" href="css/button.css?v=20260525">
+    <link rel="stylesheet" href="css/music-player.css?v=20260525">
+    <link rel="stylesheet" href="css/disc.css?v=20260525">
 </head>
 
 <body>
@@ -93,7 +93,15 @@
         <!-- Main Content -->
         <main class="main-content">
             <div id="notesDisplay"></div>
-            <button class="add-note-btn" id="addNoteBtn" aria-label="Add Note">+</button>
+            <div class="fab-group">
+                <button class="voice-trigger-btn" id="voiceTriggerBtn" aria-label="Record Voice">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button>
+                <button class="add-note-btn" id="addNoteBtn" aria-label="Add Note">+</button>
+            </div>
         </main>
 
     </div>
@@ -290,6 +298,10 @@
             <p id="noteModalText">Text</p>
             <div class="note-timestamp" id="noteTimestamp"></div>
             <img id="noteModalImage" style="max-width:100%;max-height:300px;object-fit:contain;border-radius:12px;display:none;margin-bottom:12px;">
+            <div id="voicePlayer" style="display:none;">
+                <audio id="noteVoicePlayer" controls style="width:100%;border-radius:10px;"></audio>
+            </div>
+            <button class="voice-speed-btn" id="voiceSpeedBtn">1x</button>
             <button class="note-like-btn" id="noteLikeBtn">
                 <svg viewBox="0 0 24 24" id="noteLikeIcon">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -339,6 +351,63 @@
             <div class="modal-actions">
                 <button class="btn btn-secondary" id="cancelAddNote">Cancel</button>
                 <button class="btn btn-primary" id="confirmAddNote">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Recording Modal -->
+    <div class="modal-overlay voice-modal-overlay" id="voiceModal">
+        <div class="modal voice-modal">
+            <div class="voice-modal-header">
+                <h3>Voice Note</h3>
+                <button class="modal-close" id="closeVoiceModal" aria-label="Close">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="voice-modal-body">
+                <div class="voice-record-stage">
+                    <div class="voice-record-glow" id="voiceRecordGlow"></div>
+                    <div class="voice-record-btn" id="voiceRecordBtn">
+                        <div class="voice-record-icon" id="voiceRecordIcon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                        </div>
+                        <div class="voice-record-pause" id="voiceRecordPause" style="display:none;">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="6" y="4" width="4" height="16" rx="1"/>
+                                <rect x="14" y="4" width="4" height="16" rx="1"/>
+                            </svg>
+                        </div>
+                        <div class="voice-record-play" id="voiceRecordPlay" style="display:none;">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="voice-record-timer" id="voiceRecordTimer">0:00</div>
+                <div class="voice-record-status" id="voiceRecordStatus">Tap to record</div>
+                <div class="voice-record-wave" id="voiceRecordWave" style="display:none;">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="voice-preview" id="voicePreview" style="display:none;">
+                    <audio id="voicePreviewAudio" controls style="width:100%;"></audio>
+                </div>
+            </div>
+            <div class="voice-modal-actions">
+                <button class="voice-btn voice-btn-secondary" id="cancelVoice">Cancel</button>
+                <button class="voice-btn voice-btn-primary" id="sendVoice">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                    Send
+                </button>
             </div>
         </div>
     </div>
@@ -398,22 +467,22 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/config.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/api.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/storage.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/state.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/elements.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/utils.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/auth.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/profile.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/music.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/notes.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/weather.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/upload.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/init.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/ws.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
-    <script src="js/iframe-highlighter.js?v=9a1c4d3e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=20260525"></script>
+    <script src="js/config.js?v=20260525"></script>
+    <script src="js/api.js?v=20260525"></script>
+    <script src="js/storage.js?v=20260525"></script>
+    <script src="js/state.js?v=20260525"></script>
+    <script src="js/elements.js?v=20260525"></script>
+    <script src="js/utils.js?v=20260525"></script>
+    <script src="js/auth.js?v=20260525"></script>
+    <script src="js/profile.js?v=20260525"></script>
+    <script src="js/music.js?v=20260525"></script>
+    <script src="js/notes.js?v=20260525"></script>
+    <script src="js/weather.js?v=20260525"></script>
+    <script src="js/upload.js?v=20260525"></script>
+    <script src="js/init.js?v=20260525"></script>
+    <script src="js/ws.js?v=20260525"></script>
+    <script src="js/iframe-highlighter.js?v=20260525"></script>
 
 </body>
 
