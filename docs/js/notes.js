@@ -576,6 +576,14 @@ const handleNoteImageSelect = (file) => {
     elements.noteImageFileName.textContent = file.name;
 };
 
+const switchNoteMode = (mode) => {
+    const isText = mode === 'text';
+    document.getElementById('noteTextGroup').style.display = isText ? 'block' : 'none';
+    document.getElementById('noteImageUpload').style.display = isText ? 'none' : 'block';
+    elements.noteTextMode.classList.toggle('active', isText);
+    elements.noteImageMode.classList.toggle('active', !isText);
+};
+
 // Note mode toggle events
 elements.noteTextMode.addEventListener('click', () => switchNoteMode('text'));
 elements.noteImageMode.addEventListener('click', () => switchNoteMode('image'));
