@@ -577,6 +577,7 @@ const handleNoteImageSelect = (file) => {
 };
 
 const switchNoteMode = (mode) => {
+    noteMode = mode;
     const isText = mode === 'text';
     document.getElementById('noteTextGroup').style.display = isText ? 'block' : 'none';
     document.getElementById('noteImageUpload').style.display = isText ? 'none' : 'block';
