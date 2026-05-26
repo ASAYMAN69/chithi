@@ -359,12 +359,16 @@ body {
 .note-card p {
     font-size: 10px;
     line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* Note Modal */
 #noteModalContent {
     text-align: center;
     padding: 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #noteModalContent h3 {
@@ -376,6 +380,8 @@ body {
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 20px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .note-like-btn {
