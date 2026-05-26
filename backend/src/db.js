@@ -41,7 +41,8 @@ const SCHEMA = {
     updatedAt: 'DATETIME DEFAULT CURRENT_TIMESTAMP',
     isDeleted: 'INTEGER DEFAULT 0',
     username: 'TEXT NOT NULL',
-    type: 'TEXT DEFAULT "text"'
+    type: 'TEXT DEFAULT "text"',
+    replyingTo: 'INTEGER DEFAULT NULL'
   },
   reels: {
     id: 'INTEGER PRIMARY KEY AUTOINCREMENT',

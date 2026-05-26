@@ -32,6 +32,45 @@ const openNoteModal = async (note) => {
 
     noteModalUser.textContent = note.username;
 
+    // Show reply content box if this note is a reply
+    const replyInfoEl = document.getElementById('noteReplyInfo');
+    if (replyInfoEl) {
+        if (note.replyingTo) {
+            const parentId = note.replyingTo;
+            const isDeleted = note.replyToDeleted;
+            let previewHtml = '';
+            if (isDeleted) {
+                previewHtml = '<span class="reply-box-preview deleted">[deleted]</span>';
+            } else if (note.replyToType === 'image' && note.replyToText) {
+                const imgUrl = getImageCdnUrl(note.replyToText);
+                previewHtml = '<span class="reply-box-preview"><span class="reply-box-img-thumb" style="background-image:url(' + imgUrl + ')"></span>Photo</span>';
+            } else if (note.replyToType === 'voice' && note.replyToText) {
+                previewHtml = '<span class="reply-box-preview"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg> Voice</span>';
+            } else {
+                const text = escapeHtml(note.replyToText || '');
+                previewHtml = '<span class="reply-box-preview text">' + text + '</span>';
+            }
+            replyInfoEl.innerHTML = '<div class="note-reply-box" data-reply-id="' + parentId + '">'
+                + '<span class="reply-box-arrow">\u21B3</span>'
+                + '<strong class="reply-box-user">' + escapeHtml(note.replyToUsername || '') + '</strong>'
+                + previewHtml
+                + '</div>';
+            replyInfoEl.style.display = 'block';
+            const replyBox = replyInfoEl.querySelector('.note-reply-box');
+            replyBox.addEventListener('click', async function (e) {
+                e.stopPropagation();
+                try {
+                    const parentNote = await API.getNote(parentId);
+                    openNoteModal(parentNote);
+                } catch (err) {
+                    showToast('Original note not found');
+                }
+            });
+        } else {
+            replyInfoEl.style.display = 'none';
+        }
+    }
+
     const colors = ['#FFB6C1', '#87CEEB', '#98D8C8', '#FFD700', '#DDA0DD'];
     const colorIndex = note.username.charCodeAt(0) % colors.length;
     noteModal.style.backgroundColor = colors[colorIndex] + 'cc';
@@ -218,6 +257,27 @@ noteModal.addEventListener('click', (e) => {
     if (e.target === noteModal) closeModal(noteModal);
 });
 
+// ==================== Reply to Note ====================
+document.getElementById('noteReplyBtn').addEventListener('click', () => {
+    const parentId = currentNoteId;
+    const parentUser = noteModalUser.textContent;
+    closeModal(noteModal);
+    resetAddNoteModal();
+    switchNoteMode('text');
+
+    const indicator = document.createElement('div');
+    indicator.id = 'replyIndicator';
+    indicator.className = 'reply-indicator';
+    indicator.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>'
+        + '<span>Replying to <strong>' + escapeHtml(parentUser) + '</strong></span>';
+    const modalBody = document.querySelector('#addNoteModal .modal-body');
+    modalBody.insertBefore(indicator, modalBody.firstChild);
+
+    document.getElementById('confirmAddNote').dataset.replyingTo = parentId;
+    openModal(elements.addNoteModal);
+    elements.noteText.focus();
+});
+
 // ==================== Voice Playback Speed ====================
 const speedBtn = document.getElementById('voiceSpeedBtn');
 const speedCycle = [1, 1.5, 2, 0.5];
@@ -265,11 +325,19 @@ const renderNoteCards = (notes, startIndex) => {
         card.dataset.id = note.id;
 
         const editedBadge = note.createdAt !== note.updatedAt ? `<span class="note-edited-badge">Edited ${formatNoteTime(note.updatedAt)}</span>` : '';
+        let replyHtml = '';
+        if (note.replyingTo) {
+            const isDeleted = note.replyToDeleted;
+            const replyLabel = isDeleted
+                ? '<span class="note-reply-badge deleted">\u21B3 [deleted]</span>'
+                : '<span class="note-reply-badge">\u21B3 <strong>' + escapeHtml(note.replyToUsername) + '</strong></span>';
+            replyHtml = '<div class="note-reply-info">' + replyLabel + '</div>';
+        }
         if (note.type === 'image' && note.noteText) {
             const imgUrl = getImageCdnUrl(note.noteText);
-            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>${editedBadge}`;
+            card.innerHTML = `${replyHtml}<h4>${escapeHtml(note.username)}</h4><div class="note-card-img" style="background-image:url('${imgUrl}');background-size:cover;background-position:center;width:100%;height:90px;border-radius:8px;margin-top:4px;"></div>${editedBadge}`;
         } else if (note.type === 'voice' && note.noteText) {
-            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4>
+            card.innerHTML = `${replyHtml}<h4>${escapeHtml(note.username)}</h4>
                 <div class="note-card-voice">
                     <button class="note-card-voice-play" data-key="${escapeHtml(note.noteText)}">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -315,7 +383,7 @@ const renderNoteCards = (notes, startIndex) => {
                 }
             });
         } else {
-            card.innerHTML = `<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>${editedBadge}`;
+            card.innerHTML = `${replyHtml}<h4>${escapeHtml(note.username)}</h4><p>${escapeHtml(note.noteText)}</p>${editedBadge}`;
         }
 
         card.addEventListener('click', () => openNoteModal(note));
@@ -603,6 +671,9 @@ const resetAddNoteModal = () => {
     resetImageUpload();
     document.querySelector('#addNoteModal .modal-header h3').textContent = 'Add Note';
     document.getElementById('confirmAddNote').textContent = 'Add';
+    document.getElementById('confirmAddNote').dataset.replyingTo = '';
+    const indicator = document.getElementById('replyIndicator');
+    if (indicator) indicator.remove();
     switchNoteMode('text');
 };
 
@@ -611,8 +682,7 @@ elements.addNoteBtn.addEventListener('click', () => {
     openModal(elements.addNoteModal);
 });
 elements.closeAddNote.addEventListener('click', () => {
-    resetAddNoteModal();
-    closeModal(elements.addNoteModal);
+    elements.confirmAddNote.click();
 });
 elements.cancelAddNote.addEventListener('click', () => {
     resetAddNoteModal();
@@ -653,7 +723,7 @@ elements.confirmAddNote.addEventListener('click', async () => {
                 elements.confirmAddNote.textContent = 'Save';
                 return;
             } else {
-                await API.createNote(imageKey, 'image');
+                await API.createNote(imageKey, 'image', parseInt(elements.confirmAddNote.dataset.replyingTo) || undefined);
             }
 
             await loadNotes();
@@ -678,7 +748,7 @@ elements.confirmAddNote.addEventListener('click', async () => {
                 document.getElementById('confirmAddNote').textContent = 'Add';
                 currentNoteId = null;
             } else {
-                await API.createNote(text);
+                await API.createNote(text, undefined, parseInt(elements.confirmAddNote.dataset.replyingTo) || undefined);
                 await loadNotes();
                 showToast('Note added!');
             }

@@ -12,36 +12,36 @@
     <meta name="screen-orientation" content="portrait">
     <title>Chithi :3</title>
     <link rel="icon" href="/favicon.png" type="image/png">
-    <!-- Cute Minecraft Font -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Press Start 2P', cursive;
         }
     </style>
-    <link rel="stylesheet" href="css/style.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/ray.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/weather.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/reel.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/profile.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/modal.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/button.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/music-player.css?v=ilovehersomuchman">
-    <link rel="stylesheet" href="css/disc.css?v=ilovehersomuchman">
+    <link rel="stylesheet" href="css/style.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/ray.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/weather.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/reel.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/profile.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/modal.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/button.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/music-player.css?v=ilovehersomuchman2">
+    <link rel="stylesheet" href="css/disc.css?v=ilovehersomuchman2">
 </head>
 
 <body>
-    <!-- User Modal -->
+    <!-- K bai tumi?? -->
     <div id="userModal" class="modal-overlay" style="display:none;">
         <div class="modal"
             style="background: #fff; padding: 20px; border: 4px solid #000; border-radius: 12px; text-align: center; box-shadow: 8px 8px 0px #000;">
-            <h3 style="margin-bottom: 20px; font-size: 16px;">Who are you?</h3>
-            <input type="text" id="usernameInput" placeholder="Enter name..."
+            <h3 style="margin-bottom: 20px; font-size: 16px;">Ke tmi? Naam ki? Baari koi?</h3>
+            <input type="text" id="usernameInput" placeholder="Naam Kow..."
                 style="padding: 10px; border: 2px solid #000; margin-bottom: 10px; font-family: 'Press Start 2P';">
-            <input type="password" id="passwordInput" placeholder="Enter password..."
+            <input type="password" id="passwordInput" placeholder="Password Kow..."
                 style="padding: 10px; border: 2px solid #000; margin-bottom: 15px; font-family: 'Press Start 2P';">
             <button id="saveUsername"
-                style="padding: 10px 20px; background: #FFB6C1; border: 2px solid #000; cursor: pointer; font-family: 'Press Start 2P';">Enter</button>
+                style="padding: 10px 20px; background: #FFB6C1; border: 2px solid #000; cursor: pointer; font-family: 'Press Start 2P';">Check
+                koren bai</button>
         </div>
     </div>
     <div class="app">
@@ -132,7 +132,8 @@
                 <div class="profile-form">
                     <div class="form-group">
                         <label for="userBio">Bio</label>
-                        <textarea id="userBio" placeholder="Say something to TA..." rows="3" maxlength="100"></textarea>
+                        <textarea id="userBio" placeholder="Kisu kon nijer shomporke" rows="3"
+                            maxlength="100"></textarea>
                     </div>
                 </div>
             </div>
@@ -143,11 +144,11 @@
         </div>
     </div>
 
-    <!-- Music Modal -->
+    <!-- Gaan Modal -->
     <div class="modal-overlay" id="musicModal">
         <div class="modal" style="max-height: 90vh;">
             <div class="modal-header">
-                <h3>Music</h3>
+                <h3>Gaan shunbo :D</h3>
                 <button class="modal-close" id="closeMusicModal" aria-label="Close">
                     <svg viewBox="0 0 24 24">
                         <path
@@ -162,8 +163,8 @@
                             <img src="" alt="Album Cover" id="musicCover">
                         </div>
                         <div class="music-info">
-                            <div class="music-title" id="musicTitle">No music playing</div>
-                            <div class="music-artist" id="musicArtist">Add your favorite song</div>
+                            <div class="music-title" id="musicTitle">Gaan play hocche na hehe</div>
+                            <div class="music-artist" id="musicArtist">Gaan add koren dekhi</div>
                         </div>
                         <div class="music-controls">
                             <button class="music-control-btn" id="prevSong" aria-label="Previous">
@@ -187,7 +188,7 @@
                 <div class="music-queue-scroll">
                     <div class="music-queue-header">
                         <h4>Playlist</h4>
-                        <button class="add-song-btn" id="addSongBtn">Add Song</button>
+                        <button class="add-song-btn" id="addSongBtn">Add Gaan</button>
                     </div>
                     <div class="song-list" id="songList">
                         <div class="empty-state" id="emptyQueue">
@@ -195,7 +196,7 @@
                                 <path
                                     d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                             </svg>
-                            <p>Playlist is empty<br>Click above to add songs</p>
+                            <p>Playlist e kisu nai to<br>Click above to add gaan</p>
                         </div>
                     </div>
                 </div>
@@ -227,7 +228,7 @@
     <div class="modal-overlay" id="addSongModal">
         <div class="modal" style="max-width: 360px;">
             <div class="modal-header">
-                <h3>Add Song</h3>
+                <h3>Add Gaan</h3>
                 <button class="modal-close" id="closeAddSong" aria-label="Close">
                     <svg viewBox="0 0 24 24">
                         <path
@@ -237,7 +238,7 @@
             </div>
             <div class="modal-body">
                 <div class="add-song-tabs">
-                    <button class="add-song-tab active" id="musicTabUpload">Upload Music</button>
+                    <button class="add-song-tab active" id="musicTabUpload">Upload Gaan</button>
                     <button class="add-song-tab disabled-tab" id="musicTabYoutube">YouTube <span
                             class="soon-badge">Soon</span></button>
                 </div>
@@ -305,6 +306,7 @@
                 </svg>
             </button>
             <h3 id="noteModalUser">User</h3>
+            <div id="noteReplyInfo" class="note-reply-modal-info" style="display:none;"></div>
             <p id="noteModalText">Text</p>
             <div class="note-timestamp" id="noteTimestamp"></div>
             <img id="noteModalImage"
@@ -319,6 +321,11 @@
                         d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
             </button>
+            <button class="note-reply-btn" id="noteReplyBtn" title="Reply">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
+                </svg>
+            </button>
             <div id="noteLikesContainer" class="note-likes-display"></div>
             <div class="note-modal-actions">
                 <button class="btn btn-secondary" id="closeNoteModal">Close</button>
@@ -331,10 +338,9 @@
         <div class="modal" style="max-width: 360px;">
             <div class="modal-header">
                 <h3>Add Note</h3>
-                <button class="modal-close" id="closeAddNote" aria-label="Close">
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                <button class="modal-close" id="closeAddNote" aria-label="Send" style="background:var(--primary-accent);">
+                    <svg viewBox="0 0 24 24" style="fill:white;width:18px;height:18px;">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                     </svg>
                 </button>
             </div>
@@ -489,22 +495,22 @@
     <div class="toast" id="toast"></div>
 
     <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=ilovehersomuchman"></script>
-    <script src="js/config.js?v=ilovehersomuchman"></script>
-    <script src="js/api.js?v=ilovehersomuchman"></script>
-    <script src="js/storage.js?v=ilovehersomuchman"></script>
-    <script src="js/state.js?v=ilovehersomuchman"></script>
-    <script src="js/elements.js?v=ilovehersomuchman"></script>
-    <script src="js/utils.js?v=ilovehersomuchman"></script>
-    <script src="js/auth.js?v=ilovehersomuchman"></script>
-    <script src="js/profile.js?v=ilovehersomuchman"></script>
-    <script src="js/music.js?v=ilovehersomuchman"></script>
-    <script src="js/notes.js?v=ilovehersomuchman"></script>
-    <script src="js/weather.js?v=ilovehersomuchman"></script>
-    <script src="js/upload.js?v=ilovehersomuchman"></script>
-    <script src="js/init.js?v=ilovehersomuchman"></script>
-    <script src="js/ws.js?v=ilovehersomuchman"></script>
-    <script src="js/iframe-highlighter.js?v=ilovehersomuchman"></script>
+        src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js?v=ilovehersomuchman2"></script>
+    <script src="js/config.js?v=ilovehersomuchman2"></script>
+    <script src="js/api.js?v=ilovehersomuchman2"></script>
+    <script src="js/storage.js?v=ilovehersomuchman2"></script>
+    <script src="js/state.js?v=ilovehersomuchman2"></script>
+    <script src="js/elements.js?v=ilovehersomuchman2"></script>
+    <script src="js/utils.js?v=ilovehersomuchman2"></script>
+    <script src="js/auth.js?v=ilovehersomuchman2"></script>
+    <script src="js/profile.js?v=ilovehersomuchman2"></script>
+    <script src="js/music.js?v=ilovehersomuchman2"></script>
+    <script src="js/notes.js?v=ilovehersomuchman2"></script>
+    <script src="js/weather.js?v=ilovehersomuchman2"></script>
+    <script src="js/upload.js?v=ilovehersomuchman2"></script>
+    <script src="js/init.js?v=ilovehersomuchman2"></script>
+    <script src="js/ws.js?v=ilovehersomuchman2"></script>
+    <script src="js/iframe-highlighter.js?v=ilovehersomuchman2"></script>
 
 </body>
 

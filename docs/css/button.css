@@ -188,3 +188,38 @@
 .note-delete-btn:hover {
     background: rgba(255, 71, 87, 0.4);
 }
+
+/* ==================== Reply Button ==================== */
+.note-reply-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    margin: 0 auto 15px;
+}
+
+.note-reply-btn:hover {
+    background: rgba(255,255,255,0.5);
+    transform: scale(1.05);
+}
+
+.note-reply-btn:active {
+    transform: scale(0.9);
+}
+
+.note-reply-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: #555;
+    transition: fill 0.2s;
+}
+
+.note-reply-btn:hover svg {
+    fill: var(--primary-accent);
+}

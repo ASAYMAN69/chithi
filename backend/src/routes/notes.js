@@ -6,25 +6,63 @@ const { broadcastWS } = require('../ws');
 router.get('/', (req, res) => {
   const limit = Math.min(parseInt(req.query.limit) || 20, 100);
   const offset = parseInt(req.query.offset) || 0;
-  const notes = getAll('SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT ? OFFSET ?', [limit, offset]);
+  const notes = getAll(`
+    SELECT n.*,
+      p.username AS replyToUsername,
+      p.noteText AS replyToText,
+      p.type AS replyToType,
+      p.isDeleted AS replyToDeleted
+    FROM notes n
+    LEFT JOIN notes p ON n.replyingTo = p.id
+    WHERE n.isDeleted = 0
+    ORDER BY n.createdAt DESC
+    LIMIT ? OFFSET ?
+  `, [limit, offset]);
   const total = getOne('SELECT COUNT(*) as count FROM notes WHERE isDeleted = 0');
   res.json({ notes, hasMore: offset + limit < total.count });
 });
 
 router.post('/', (req, res) => {
   const username = req.headers['x-username'];
-  const { noteText, type, key } = req.body;
+  const { noteText, type, replyingTo } = req.body;
   
   if (!noteText) {
     return res.status(400).json({ error: 'noteText is required' });
   }
   
-  runQuery('INSERT INTO notes (noteText, username, type, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)', [noteText, username, type || 'text', nowISO(), nowISO()]);
+  let validReplyId = null;
+  if (replyingTo) {
+    const parent = getOne('SELECT id FROM notes WHERE id = ? AND isDeleted = 0', [replyingTo]);
+    if (parent) {
+      validReplyId = replyingTo;
+    }
+  }
+  
+  runQuery('INSERT INTO notes (noteText, username, type, createdAt, updatedAt, replyingTo) VALUES (?, ?, ?, ?, ?, ?)',
+    [noteText, username, type || 'text', nowISO(), nowISO(), validReplyId]);
   
   broadcastWS({ type: 'notes_updated' });
   
   const newNote = getOne('SELECT * FROM notes WHERE id = (SELECT MAX(id) FROM notes WHERE username = ?)', [username]);
   res.json(newNote);
+});
+
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const note = getOne(`
+    SELECT n.*,
+      p.username AS replyToUsername,
+      p.noteText AS replyToText,
+      p.type AS replyToType,
+      p.isDeleted AS replyToDeleted
+    FROM notes n
+    LEFT JOIN notes p ON n.replyingTo = p.id
+    WHERE n.id = ?
+  `, [id]);
+  if (!note) {
+    return res.status(404).json({ error: 'Note not found' });
+  }
+  res.json(note);
 });
 
 router.put('/:id', (req, res) => {

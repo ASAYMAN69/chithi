@@ -30,7 +30,8 @@ const API = {
 
   // Notes
   getNotes: (offset = 0, limit = 20) => apiFetch(`/api/notes?offset=${offset}&limit=${limit}`),
-  createNote: (noteText, type) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText, type: type || 'text' }) }),
+  getNote: (id) => apiFetch(`/api/notes/${id}`),
+  createNote: (noteText, type, replyingTo) => apiFetch('/api/notes', { method: 'POST', body: JSON.stringify({ noteText, type: type || 'text', replyingTo }) }),
   updateNote: async (id, noteText) => {
     const username = getUsername();
     const password = getPassword();
